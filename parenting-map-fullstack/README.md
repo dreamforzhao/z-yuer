@@ -7,12 +7,13 @@
 - Node 本地 REST API
 - 移动端单页 App 页面
 - 孩子档案：出生日期、性别、城市
-- 自动计算月龄，并生成今日重点
+- 自动计算月龄，并生成贴合孩子档案的首页建议
+- 出生体重/体长、本次儿保体重/身长记录
+- 喂养方式：母乳、奶粉、混合喂养
 - 育儿百科、内容详情
 - 疫苗与儿保时间轴
-- 用品与安全库：安全座椅、提篮、尿不湿、餐椅
-- 睡眠与哄睡建议
-- 学习路径
+- 百科分层：喂养、健康、睡眠、发育、行为、用品安全、入园、父母支持
+- 用品与安全内容收进百科，不再作为底部主栏目
 - 搜索映射：尿不湿、安全座椅、辅食、发烧、哄睡、疫苗
 
 ## 运行
@@ -31,13 +32,14 @@ http://localhost:4173
 
 - `GET /api/health`
 - `GET /api/children/demo`
-- `GET /api/today?birthDate=2025-10-16&sex=男孩&city=上海`
+- `GET /api/home?birthDate=2025-10-16&sex=男孩&city=上海&feedingType=混合喂养`
+- `GET /api/encyclopedia`
 - `GET /api/articles`
 - `GET /api/articles/:id`
 - `GET /api/products`
 - `GET /api/products/:id`
 - `GET /api/care-schedule?birthDate=2025-10-16&city=上海`
-- `GET /api/learning-paths`
+- `GET /api/growth-records?birthDate=2025-10-16&birthWeightKg=3.25&birthLengthCm=50&currentWeightKg=8.4&currentHeightCm=70.5`
 - `GET /api/search?q=尿不湿`
 
 ## 后续开发建议

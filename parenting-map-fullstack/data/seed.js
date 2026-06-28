@@ -5,71 +5,138 @@ export const childProfile = {
   sex: "男孩",
   city: "上海",
   feedingType: "混合喂养",
+  birthWeightKg: 3.25,
+  birthLengthCm: 50,
+  currentWeightKg: 8.4,
+  currentHeightCm: 70.5,
+  latestCheckupDate: "2026-06-20",
   allergies: ["暂无"],
   caregivers: ["妈妈", "爸爸", "外婆"]
 };
 
-export const stageRecommendations = [
+export const checkupRecords = [
+  { ageMonth: 1, date: "2025-11-16", weightKg: 4.3, heightCm: 54.2, note: "满月儿保，喂养稳定。" },
+  { ageMonth: 3, date: "2026-01-16", weightKg: 6.1, heightCm: 61.5, note: "抬头和追视良好。" },
+  { ageMonth: 6, date: "2026-04-16", weightKg: 7.6, heightCm: 67.2, note: "准备添加辅食，关注铁摄入。" },
+  { ageMonth: 8, date: "2026-06-20", weightKg: 8.4, heightCm: 70.5, note: "辅食练习中，继续观察过敏反应。" }
+];
+
+export const stageRules = [
   {
     maxMonth: 6,
     stage: "0-6个月",
-    today: [
-      { topic: "喂养", text: "稳定母乳/配方奶节奏，观察尿量、体重和精神状态。" },
-      { topic: "睡眠", text: "仰卧、硬床面，床上不放松软物。" },
-      { topic: "出行", text: "提篮或反向安全座椅提前安装并复查固定。" }
-    ],
-    sleep: ["先保证安全睡眠环境。", "睡前流程短而稳定。", "哭闹先排查饥饿、尿布、胀气、冷热和不适。"],
-    cards: ["母乳和奶量判断", "新生儿护理清单", "提篮怎么用"]
+    focus: ["喂养稳定", "安全睡眠", "黄疸/湿疹/红屁屁护理", "提篮或反向安全座椅"],
+    feeding: {
+      母乳: ["关注含乳姿势、尿量和体重增长。", "母乳家庭不需要用奶量焦虑替代生长观察。"],
+      奶粉: ["按奶粉说明冲调，避免过浓或过稀。", "观察吐奶、便便和皮肤反应。"],
+      混合喂养: ["先稳定母乳和奶粉节奏，再看体重增长。", "记录每天大致奶量和尿量，避免频繁换奶粉。"]
+    }
   },
   {
     maxMonth: 12,
     stage: "7-12个月",
-    today: [
-      { topic: "辅食", text: "练习手指食物，观察吞咽能力和过敏反应。" },
-      { topic: "发育", text: "鼓励爬行、坐稳和精细动作，不强迫站立。" },
-      { topic: "安全", text: "检查餐椅、安全插座、床边高度和小物件误吞风险。" }
-    ],
-    sleep: ["固定入睡时间和睡前流程。", "夜醒时降低互动强度。", "分离焦虑期增加白天陪伴和睡前安抚。"],
-    cards: ["辅食从泥糊到手指食物", "8个月体检和疫苗提醒", "尿不湿尺码和红屁屁"]
+    focus: ["辅食推进", "爬行和精细动作", "分离焦虑", "餐椅/尿不湿/家居安全"],
+    feeding: {
+      母乳: ["继续母乳，同时把辅食作为练习咀嚼和吞咽的机会。", "逐步增加富铁食物，观察过敏。"],
+      奶粉: ["奶仍是重要营养来源，辅食逐步丰富。", "不要用零食或果汁替代正餐辅食。"],
+      混合喂养: ["保持奶量基本稳定，辅食从少量到多样。", "优先练习自主抓握和餐椅进食。"]
+    }
   },
   {
     maxMonth: 24,
     stage: "1-2岁",
-    today: [
-      { topic: "吃饭", text: "建立餐椅进食规则，减少追喂和边玩边吃。" },
-      { topic: "语言", text: "多用短句回应孩子意图，少用考试式提问。" },
-      { topic: "出行", text: "继续使用适龄安全座椅，确认肩带高度。" }
-    ],
-    sleep: ["保留午睡，避免太晚。", "睡前边界保持一致。", "夜醒时复盘白天小睡、晚餐、出牙和分离焦虑。"],
-    cards: ["挑食和自主进食", "走路后的家居安全", "尿不湿到拉拉裤"]
+    focus: ["自主进食", "语言回应", "走路后的安全", "拉拉裤/如厕准备"],
+    feeding: {
+      母乳: ["可以继续母乳，但家庭餐和自主进食要逐步成为重点。", "避免夜奶影响牙齿清洁和睡眠节律。"],
+      奶粉: ["关注整体饮食结构，不让奶挤占正餐。", "杯饮练习可以逐步替代奶瓶依赖。"],
+      混合喂养: ["把规律三餐和家庭餐作为主线。", "奶、饭、睡眠和户外活动一起看，不单看某一项。"]
+    }
   },
   {
     maxMonth: 36,
     stage: "2-3岁",
-    today: [
-      { topic: "行为", text: "发脾气时先命名情绪，再给两个可选方案。" },
-      { topic: "如厕", text: "观察准备信号，不把如厕训练变成惩罚。" },
-      { topic: "阅读", text: "每天 10-15 分钟亲子阅读，重在互动。" }
-    ],
-    sleep: ["睡前边界要少而清楚。", "怕黑时先共情，再用固定流程回到床上。", "不要用恐吓或关门惩罚入睡。"],
-    cards: ["两岁总说不", "如厕训练", "绘本和表达"]
+    focus: ["情绪和规则", "如厕训练", "亲子阅读", "入托准备"],
+    feeding: {
+      母乳: ["如果仍在母乳，重点是边界和家庭节奏，而不是突然强行断。", "三餐、牙齿清洁和睡眠规则要同步稳定。"],
+      奶粉: ["奶粉不应替代正餐和咀嚼练习。", "继续观察挑食、便秘和口腔清洁。"],
+      混合喂养: ["这个阶段重点转向家庭餐、规则和表达能力。", "少用食物作为奖励或交换。"]
+    }
   },
   {
     maxMonth: 72,
     stage: "3-5岁",
-    today: [
-      { topic: "入园", text: "练习表达需求、独立如厕、午睡和分离告别。" },
-      { topic: "规则", text: "用家庭规则卡替代反复说教。" },
-      { topic: "安全", text: "强化过马路、乘车、陌生人和家中电器安全。" }
-    ],
-    sleep: ["睡前避免长视频和高兴奋游戏。", "固定阅读和关灯时间。", "持续打鼾、憋醒或白天嗜睡需要咨询医生。"],
-    cards: ["入园准备清单", "情绪和规则", "儿童座椅升级"]
+    focus: ["入园适应", "社交表达", "运动和睡眠", "安全教育"],
+    feeding: {
+      母乳: ["若仍有母乳，需要把亲密关系和规则边界分开处理。", "饮食重点是均衡、咀嚼和家庭餐。"],
+      奶粉: ["避免用奶粉替代多样化饮食。", "关注身高体重趋势、运动和睡眠。"],
+      混合喂养: ["以家庭餐、运动、睡眠和入园作息为主线。", "减少屏幕进食和边玩边吃。"]
+    }
+  }
+];
+
+export const encyclopediaSections = [
+  {
+    id: "feeding",
+    title: "喂养营养",
+    subtitle: "母乳、奶粉、辅食、挑食、餐具",
+    icon: "喂",
+    items: ["母乳衔乳", "奶粉冲调", "辅食添加", "过敏观察", "自主进食", "挑食处理"]
+  },
+  {
+    id: "health",
+    title: "健康护理",
+    subtitle: "发烧、腹泻、湿疹、便秘、就医判断",
+    icon: "护",
+    items: ["发热判断", "腹泻护理", "湿疹护理", "便秘", "误食", "摔伤"]
+  },
+  {
+    id: "sleep",
+    title: "睡眠哄睡",
+    subtitle: "安全睡眠、夜醒、抱睡转床、睡眠倒退",
+    icon: "睡",
+    items: ["安全睡眠", "睡前流程", "夜醒处理", "抱睡转床", "怕黑噩梦"]
+  },
+  {
+    id: "growth",
+    title: "发育教育",
+    subtitle: "动作、语言、认知、社交、亲子阅读",
+    icon: "育",
+    items: ["大运动", "精细动作", "语言表达", "亲子阅读", "游戏活动"]
+  },
+  {
+    id: "behavior",
+    title: "行为情绪",
+    subtitle: "发脾气、打人、咬人、分离焦虑、规则",
+    icon: "情",
+    items: ["发脾气", "打人咬人", "说不", "分离焦虑", "规则建立"]
+  },
+  {
+    id: "gear",
+    title: "用品安全",
+    subtitle: "安全座椅、提篮、尿不湿、餐椅、家居安全",
+    icon: "物",
+    items: ["安全座椅", "婴儿提篮", "尿不湿", "餐椅", "推车", "家居防护"]
+  },
+  {
+    id: "school",
+    title: "入园准备",
+    subtitle: "自理、表达、分离、作息、社交",
+    icon: "园",
+    items: ["独立如厕", "表达需求", "午睡作息", "分离告别", "同伴冲突"]
+  },
+  {
+    id: "parents",
+    title: "父母支持",
+    subtitle: "分工、老人沟通、复工、情绪压力",
+    icon: "家",
+    items: ["照护分工", "老人沟通", "复工准备", "父母情绪"]
   }
 ];
 
 export const articles = [
   {
     id: "food-8m",
+    sectionId: "feeding",
     title: "8个月不爱吃辅食怎么办",
     topic: "喂养营养",
     ageRange: "6-12个月",
@@ -83,6 +150,7 @@ export const articles = [
   },
   {
     id: "fever-home",
+    sectionId: "health",
     title: "孩子发热时先判断什么",
     topic: "健康护理",
     ageRange: "0-5岁",
@@ -92,7 +160,19 @@ export const articles = [
     resources: []
   },
   {
+    id: "sleep-routine",
+    sectionId: "sleep",
+    title: "怎么建立睡前流程",
+    topic: "睡眠哄睡",
+    ageRange: "0-5岁",
+    summary: ["睡前流程的重点是稳定、短、可重复。", "不要把哄睡变成每晚临时谈判。", "打鼾、憋醒或长期白天嗜睡需要咨询医生。"],
+    steps: ["固定开始时间。", "洗澡、拉窗帘、读书、关灯保持顺序。", "夜醒时低刺激回应。"],
+    risks: ["持续打鼾", "呼吸暂停样表现", "白天嗜睡明显"],
+    resources: [{ title: "崔玉涛睡眠相关视频搜索", url: "https://www.bilibili.com/search?keyword=%E5%B4%94%E7%8E%89%E6%B6%9B%20%E5%AE%9D%E5%AE%9D%20%E7%9D%A1%E7%9C%A0" }]
+  },
+  {
     id: "tantrum-2y",
+    sectionId: "behavior",
     title: "2岁孩子总说“不”怎么回应",
     topic: "行为情绪",
     ageRange: "2-3岁",
@@ -106,6 +186,7 @@ export const articles = [
 export const products = [
   {
     id: "car-seat",
+    sectionId: "gear",
     title: "儿童安全座椅/提篮",
     category: "出行安全",
     necessity: "必要",
@@ -117,6 +198,7 @@ export const products = [
   },
   {
     id: "diaper",
+    sectionId: "gear",
     title: "尿不湿/拉拉裤",
     category: "日常护理",
     necessity: "必要",
@@ -128,6 +210,7 @@ export const products = [
   },
   {
     id: "high-chair",
+    sectionId: "gear",
     title: "餐椅、餐具、围兜",
     category: "喂养用品",
     necessity: "建议",
@@ -148,25 +231,4 @@ export const careSchedule = [
   { ageMonth: 12, label: "12月龄", type: "health", title: "1岁儿保评估", description: "身高体重、牙齿、语言理解、站立行走准备。" },
   { ageMonth: 18, label: "18月龄", type: "health", title: "加强免疫与儿保评估", description: "关注语言、行为、营养和安全。" },
   { ageMonth: 36, label: "3岁", type: "health", title: "入园前健康管理", description: "视力、口腔、行为、作息和疫苗查验。" }
-];
-
-export const learningPaths = [
-  {
-    id: "sleep",
-    title: "睡眠和哄睡",
-    ageRange: "0-5岁",
-    lessons: ["安全睡眠", "睡前流程", "夜醒处理", "抱睡转床", "需要就医的睡眠信号"]
-  },
-  {
-    id: "feeding",
-    title: "从母乳到自主进食",
-    ageRange: "0-2岁",
-    lessons: ["母乳和奶量", "辅食准备", "手指食物", "挑食处理", "餐桌规则"]
-  },
-  {
-    id: "rules",
-    title: "情绪和规则",
-    ageRange: "2-5岁",
-    lessons: ["发脾气", "打人咬人", "有限选择", "家庭规则卡", "入园适应"]
-  }
 ];
