@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>养育地图 - 0到5岁育儿百科原型</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="prototype-shell" aria-label="养育地图 App 原型">
+    <section class="phone" aria-label="手机界面">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">中国大陆家庭版</p>
+          <h1>养育地图</h1>
+        </div>
+        <button class="icon-btn" type="button" aria-label="孩子昵称" id="childBadge">昕昕</button>
+      </header>
+
+      <section class="screen is-active" data-screen="today" aria-labelledby="today-title">
+        <form class="profile-card" id="profileForm">
+          <div>
+            <p class="eyebrow">先建档，内容才会准</p>
+            <h2>孩子信息</h2>
+          </div>
+          <label>
+            出生日期
+            <input id="birthDate" type="date" value="2025-10-16" max="2026-06-28">
+          </label>
+          <fieldset>
+            <legend>性别</legend>
+            <label><input type="radio" name="sex" value="男孩" checked> 男孩</label>
+            <label><input type="radio" name="sex" value="女孩"> 女孩</label>
+          </fieldset>
+          <label>
+            常住城市
+            <select id="citySelect">
+              <option>上海</option>
+              <option>北京</option>
+              <option>广州</option>
+              <option>深圳</option>
+              <option>杭州</option>
+            </select>
+          </label>
+        </form>
+
+        <div class="child-strip">
+          <img src="https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=720&q=80" alt="家长抱着婴儿的生活照片">
+          <div>
+            <p class="muted" id="ageLine">8个月12天 · 男孩 · 上海</p>
+            <h2 id="today-title">今天先做好这 3 件事</h2>
+          </div>
+        </div>
+
+        <label class="search-box" for="searchInput">
+          <span>查问题</span>
+          <input id="searchInput" type="search" placeholder="如：安全座椅怎么装、尿不湿选什么、半夜发烧">
+        </label>
+        <div class="search-result" id="searchResult" role="status" aria-live="polite"></div>
+
+        <div class="daily-list" id="dailyList"></div>
+
+        <nav class="topic-grid topic-grid-wide" aria-label="育儿主题">
+          <button type="button" data-route="encyclopedia">喂养</button>
+          <button type="button" data-route="sleep">哄睡</button>
+          <button type="button" data-route="vaccine">疫苗</button>
+          <button type="button" data-route="encyclopedia">健康</button>
+          <button type="button" data-route="gear">用品</button>
+          <button type="button" data-route="gear">出行</button>
+          <button type="button" data-route="encyclopedia">发育</button>
+          <button type="button" data-route="learn">教育</button>
+          <button type="button" data-route="encyclopedia">行为</button>
+          <button type="button" data-route="gear">安全</button>
+          <button type="button" data-route="learn">阅读</button>
+          <button type="button" data-route="encyclopedia">入园</button>
+        </nav>
+
+        <section class="quiet-panel">
+          <div class="section-head">
+            <h3>按当前月龄推荐</h3>
+            <button type="button" data-route="encyclopedia">全部主题</button>
+          </div>
+          <div class="cards-row" id="stageCards"></div>
+        </section>
+      </section>
+
+      <section class="screen" data-screen="encyclopedia" aria-labelledby="ency-title">
+        <div class="section-head sticky-head">
+          <button class="back-btn" type="button" data-route="today" aria-label="返回今日">←</button>
+          <h2 id="ency-title">育儿百科</h2>
+          <button type="button">筛选</button>
+        </div>
+
+        <div class="age-tabs" role="tablist" aria-label="年龄阶段">
+          <button class="is-selected" type="button">0-6月</button>
+          <button type="button">7-12月</button>
+          <button type="button">1-2岁</button>
+          <button type="button">2-3岁</button>
+          <button type="button">3-5岁</button>
+        </div>
+
+        <div class="knowledge-map">
+          <article class="map-block">
+            <h3>喂养营养</h3>
+            <p>母乳、奶粉、辅食、过敏、挑食、饮水、餐具。</p>
+            <button type="button" data-route="detail">进入</button>
+          </article>
+          <article class="map-block">
+            <h3>健康护理</h3>
+            <p>发烧、腹泻、湿疹、咳嗽、便秘、就医判断。</p>
+            <button type="button">进入</button>
+          </article>
+          <article class="map-block">
+            <h3>发育教育</h3>
+            <p>动作、语言、认知、社交、亲子阅读、入园准备。</p>
+            <button type="button">进入</button>
+          </article>
+          <article class="map-block">
+            <h3>家庭生活</h3>
+            <p>家居安全、照护分工、老人沟通、父母心理。</p>
+            <button type="button">进入</button>
+          </article>
+        </div>
+
+        <section class="quiet-panel">
+          <h3>知识面扩展</h3>
+          <div class="tag-cloud">
+            <span>母乳衔乳</span><span>奶瓶消毒</span><span>辅食过敏</span><span>红屁屁</span>
+            <span>安全座椅</span><span>婴儿提篮</span><span>哄睡</span><span>夜醒</span>
+            <span>咬人打人</span><span>语言迟缓</span><span>入园焦虑</span><span>绘本选择</span>
+          </div>
+        </section>
+      </section>
+
+      <section class="screen" data-screen="gear" aria-labelledby="gear-title">
+        <div class="section-head sticky-head">
+          <button class="back-btn" type="button" data-route="today" aria-label="返回今日">←</button>
+          <h2 id="gear-title">用品与安全</h2>
+          <button type="button">清单</button>
+        </div>
+
+        <article class="answer-card">
+          <p class="eyebrow">不是带货，是帮家长少踩坑</p>
+          <h3>用品百科怎么设计</h3>
+          <p>每个用品都拆成：要不要买、适用月龄、怎么选、怎么用、常见错误、视频演示、品牌对比维度。</p>
+        </article>
+
+        <div class="gear-list">
+          <article>
+            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=720&q=80" alt="汽车后排座椅">
+            <div>
+              <h3>儿童安全座椅/提篮</h3>
+              <p>0-15个月重点看反向安装、五点式安全带、车内固定方式和说明书适配。</p>
+              <a href="https://www.bilibili.com/search?keyword=%E5%84%BF%E7%AB%A5%E5%AE%89%E5%85%A8%E5%BA%A7%E6%A4%85%20%E5%AE%89%E8%A3%85" target="_blank" rel="noreferrer">查看安装视频</a>
+            </div>
+          </article>
+          <article>
+            <img src="https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?auto=format&fit=crop&w=720&q=80" alt="婴儿护理用品">
+            <div>
+              <h3>尿不湿</h3>
+              <p>先按体重和皮肤状态选尺码，再看透气、吸收、腰围、渠道和单片价格。</p>
+              <a href="https://www.bilibili.com/search?keyword=%E5%B0%BF%E4%B8%8D%E6%B9%BF%20%E6%80%8E%E4%B9%88%E9%80%89" target="_blank" rel="noreferrer">查看选购视频</a>
+            </div>
+          </article>
+          <article>
+            <img src="https://images.unsplash.com/photo-1546015720-b8b30df5aa27?auto=format&fit=crop&w=720&q=80" alt="婴儿辅食餐具">
+            <div>
+              <h3>餐椅、餐具、围兜</h3>
+              <p>餐椅优先稳定和束缚系统；餐具关注材质、边缘、清洗和高温耐受。</p>
+              <a href="https://www.bilibili.com/search?keyword=%E5%AE%9D%E5%AE%9D%E9%A4%90%E6%A4%85%20%E6%80%8E%E4%B9%88%E9%80%89" target="_blank" rel="noreferrer">查看餐椅视频</a>
+            </div>
+          </article>
+        </div>
+
+        <section class="quiet-panel">
+          <h3>尿不湿品牌库原型</h3>
+          <div class="compare-table" role="table" aria-label="尿不湿品牌对比维度">
+            <div role="row"><b>品牌</b><b>适合场景</b><b>观察点</b></div>
+            <div role="row"><span>帮宝适/好奇</span><span>常见大众款</span><span>尺码、腰围、活动量</span></div>
+            <div role="row"><span>花王/尤妮佳/大王</span><span>日系常见款</span><span>透气、厚薄、渠道</span></div>
+            <div role="row"><span>babycare/宜婴等</span><span>国产常见款</span><span>单片价、试用反馈</span></div>
+          </div>
+          <p class="fineprint">正式版不直接说“买哪个”，而是让用户按孩子体重、红屁屁、夜用、预算和真实试用反馈筛选。</p>
+        </section>
+      </section>
+
+      <section class="screen" data-screen="sleep" aria-labelledby="sleep-title">
+        <div class="section-head sticky-head">
+          <button class="back-btn" type="button" data-route="today" aria-label="返回今日">←</button>
+          <h2 id="sleep-title">睡眠与哄睡</h2>
+          <button type="button">记录</button>
+        </div>
+
+        <img class="hero-img" src="https://images.unsplash.com/photo-1566004100631-35d015d6a491?auto=format&fit=crop&w=900&q=80" alt="熟睡的婴儿">
+        <article class="answer-card">
+          <p class="eyebrow">按月龄给方法，不一刀切</p>
+          <h3 id="sleepAdviceTitle">8个月哄睡重点</h3>
+          <ul id="sleepAdviceList"></ul>
+        </article>
+
+        <section class="quiet-panel">
+          <h3>技巧库</h3>
+          <button class="question-row" type="button"><span>固定睡前流程：洗澡、拉窗帘、读书、关灯</span><b>模板</b></button>
+          <button class="question-row" type="button"><span>夜醒：先观察 1-2 分钟，再低刺激安抚</span><b>步骤</b></button>
+          <button class="question-row" type="button"><span>抱睡转床：先稳睡，再臀部、背部、头部分段放下</span><b>视频</b></button>
+          <a class="external-link" href="https://www.bilibili.com/search?keyword=%E5%B4%94%E7%8E%89%E6%B6%9B%20%E5%AE%9D%E5%AE%9D%20%E7%9D%A1%E7%9C%A0" target="_blank" rel="noreferrer">崔玉涛相关睡眠内容搜索</a>
+        </section>
+      </section>
+
+      <section class="screen" data-screen="vaccine" aria-labelledby="vaccine-title">
+        <div class="section-head sticky-head">
+          <button class="back-btn" type="button" data-route="today" aria-label="返回今日">←</button>
+          <h2 id="vaccine-title">疫苗与儿保</h2>
+          <button type="button" id="cityBadge">上海</button>
+        </div>
+
+        <div class="notice">
+          <strong>专业提示</strong>
+          <p>默认展示国家免疫规划和 0-6 岁儿童健康管理节点，实际接种以当地疾控、社区卫生服务中心和孩子个体情况为准。</p>
+        </div>
+
+        <ol class="timeline" id="vaccineTimeline"></ol>
+
+        <section class="quiet-panel">
+          <h3>本地接入设计</h3>
+          <div class="check-list">
+            <label><input type="checkbox" checked> 根据城市展示社区门诊规则</label>
+            <label><input type="checkbox" checked> 可导入接种本或手动补录</label>
+            <label><input type="checkbox"> 接种前 7 天和前 1 天提醒</label>
+            <label><input type="checkbox"> 地方非免疫规划疫苗作为可选项展示</label>
+          </div>
+        </section>
+      </section>
+
+      <section class="screen" data-screen="detail" aria-labelledby="detail-title">
+        <div class="section-head sticky-head">
+          <button class="back-btn" type="button" data-route="encyclopedia" aria-label="返回百科">←</button>
+          <h2 id="detail-title">辅食不爱吃</h2>
+          <button type="button">收藏</button>
+        </div>
+
+        <img class="hero-img" src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=900&q=80" alt="婴儿辅食餐盘">
+
+        <article class="answer-card">
+          <p class="eyebrow">适用 6-12月龄</p>
+          <h3>先记住这 3 句</h3>
+          <ul>
+            <li>辅食初期目标是练习，不是立刻吃很多。</li>
+            <li>连续拒绝不代表不喜欢，可隔几天换形态再试。</li>
+            <li>不要追喂、强迫、用零食交换。</li>
+          </ul>
+        </article>
+
+        <div class="depth-tabs" aria-label="内容深度">
+          <button class="depth-btn is-selected" data-depth="short" type="button">30秒</button>
+          <button class="depth-btn" data-depth="steps" type="button">3分钟</button>
+          <button class="depth-btn" data-depth="deep" type="button">深入</button>
+        </div>
+
+        <section class="depth-panel is-active" data-depth-panel="short">
+          <h3>立即能做</h3>
+          <p>保持固定餐椅、少量多次、先给软烂小块或泥糊，观察吞咽、皮疹、呕吐、腹泻。</p>
+        </section>
+        <section class="depth-panel" data-depth-panel="steps">
+          <h3>家庭步骤</h3>
+          <ol>
+            <li>餐前 2 小时避免大量奶和零食。</li>
+            <li>每次只上 1-2 种食物，分量从一两勺开始。</li>
+            <li>同一种食物观察 2-3 天，再增加新食材。</li>
+            <li>让孩子自己摸、抓、尝，家长保持陪伴。</li>
+          </ol>
+        </section>
+        <section class="depth-panel" data-depth-panel="deep">
+          <h3>延伸学习</h3>
+          <a class="external-link" href="https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding" target="_blank" rel="noreferrer">WHO 婴幼儿喂养建议</a>
+          <a class="external-link" href="https://www.unicef.org/parenting/food-nutrition" target="_blank" rel="noreferrer">UNICEF 儿童营养专题</a>
+          <a class="external-link" href="https://www.bilibili.com/search?keyword=%E5%B4%94%E7%8E%89%E6%B6%9B%20%E8%BE%85%E9%A3%9F" target="_blank" rel="noreferrer">崔玉涛辅食相关视频搜索</a>
+        </section>
+
+        <section class="risk-box">
+          <h3>需要咨询医生</h3>
+          <p>体重下降、反复呕吐、吞咽困难、明显过敏反应、持续腹泻或精神状态差时，不用在 App 里继续猜。</p>
+        </section>
+      </section>
+
+      <section class="screen" data-screen="learn" aria-labelledby="learn-title">
+        <div class="section-head sticky-head">
+          <button class="back-btn" type="button" data-route="today" aria-label="返回今日">←</button>
+          <h2 id="learn-title">学习路径</h2>
+          <button type="button">已学</button>
+        </div>
+
+        <article class="course-hero">
+          <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=900&q=80" alt="家长和孩子一起阅读">
+          <div>
+            <p class="eyebrow">3-5岁专题</p>
+            <h3>入园、规则和表达能力</h3>
+            <p>参考儿科、发展心理、亲子阅读和中国家庭照护场景。</p>
+          </div>
+        </article>
+
+        <div class="learning-list">
+          <article><span>01</span><div><h3>孩子为什么总说“不”</h3><p>3分钟图解</p></div></article>
+          <article><span>02</span><div><h3>发脾气时家长先说哪句话</h3><p>对话模板</p></div></article>
+          <article><span>03</span><div><h3>绘本和语言启蒙怎么选</h3><p>按年龄、主题和亲子互动方式筛选</p></div></article>
+          <article><span>04</span><div><h3>书籍参考</h3><p>崔玉涛系列、AAP 育儿百科、西尔斯亲密育儿百科等作为知识框架参考，内容需重新审核编写。</p></div></article>
+        </div>
+      </section>
+
+      <nav class="bottom-nav" aria-label="底部导航">
+        <button class="is-active" type="button" data-route="today">今日</button>
+        <button type="button" data-route="encyclopedia">百科</button>
+        <button type="button" data-route="vaccine">儿保</button>
+        <button type="button" data-route="gear">用品</button>
+        <button type="button" data-route="learn">学习</button>
+      </nav>
+    </section>
+
+    <aside class="design-notes" aria-label="原型说明">
+      <h2>升级重点</h2>
+      <p>这版加入生日、性别、城市输入，自动计算月龄并调整今日任务、哄睡建议和疫苗儿保节点。</p>
+      <ul>
+        <li>百科面扩展到用品、安全、出行、尿不湿、餐椅、提篮、入园、父母心理。</li>
+        <li>用品页不做硬带货，用“适用场景 + 使用方法 + 品牌维度 + 视频链接”组织。</li>
+        <li>产品设计先输出墨刀/原型工具交付稿，再用 HTML 做可交互样机，后续能拆前后端。</li>
+      </ul>
+    </aside>
+  </main>
+  <script src="./app.js"></script>
+</body>
+</html>

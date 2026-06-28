@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>养育地图 Fullstack</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="phone" aria-label="养育地图 App">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">0-5岁 · 中国大陆家庭</p>
+          <h1>养育地图</h1>
+        </div>
+        <button class="avatar-btn" type="button" aria-label="孩子昵称" id="childAvatar">昕</button>
+      </header>
+
+      <section class="view is-active" data-view="today" aria-labelledby="todayTitle">
+        <form class="profile-panel" id="profileForm">
+          <div class="form-title">
+            <div>
+              <p class="eyebrow">建档后推荐更准</p>
+              <h2>孩子档案</h2>
+            </div>
+            <span id="profileStatus" role="status" aria-live="polite">已载入</span>
+          </div>
+          <div class="form-grid">
+            <label for="birthDate">出生日期
+              <input id="birthDate" name="birthDate" type="date" max="2026-06-28">
+            </label>
+            <label for="sex">性别
+              <select id="sex" name="sex">
+                <option>男孩</option>
+                <option>女孩</option>
+              </select>
+            </label>
+            <label for="city">城市
+              <select id="city" name="city">
+                <option>上海</option>
+                <option>北京</option>
+                <option>广州</option>
+                <option>深圳</option>
+                <option>杭州</option>
+              </select>
+            </label>
+          </div>
+        </form>
+
+        <section class="hero-card">
+          <img src="https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=900&q=80" alt="家长抱着婴儿的生活照片">
+          <div>
+            <p class="muted" id="ageLine">加载中</p>
+            <h2 id="todayTitle">今天先做好这 3 件事</h2>
+          </div>
+        </section>
+
+        <form class="search-box" id="searchForm">
+          <label for="searchInput">查问题</label>
+          <div class="search-row">
+            <input id="searchInput" type="search" placeholder="安全座椅、尿不湿、哄睡、发烧">
+            <button type="submit">搜索</button>
+          </div>
+        </form>
+        <div class="search-results" id="searchResults" role="status" aria-live="polite"></div>
+
+        <section class="section-block" aria-labelledby="dailyTitle">
+          <div class="section-head">
+            <h2 id="dailyTitle">今日重点</h2>
+            <span id="stageBadge">分龄推荐</span>
+          </div>
+          <div class="daily-list" id="dailyList"></div>
+        </section>
+
+        <section class="section-block" aria-labelledby="quickTitle">
+          <div class="section-head">
+            <h2 id="quickTitle">快速入口</h2>
+          </div>
+          <nav class="quick-grid" aria-label="育儿主题">
+            <button type="button" data-nav="articles">喂养</button>
+            <button type="button" data-nav="sleep">哄睡</button>
+            <button type="button" data-nav="care">儿保</button>
+            <button type="button" data-nav="articles">健康</button>
+            <button type="button" data-nav="products">用品</button>
+            <button type="button" data-nav="products">出行</button>
+            <button type="button" data-nav="learning">教育</button>
+            <button type="button" data-nav="articles">行为</button>
+          </nav>
+        </section>
+
+        <section class="section-block" aria-labelledby="recommendTitle">
+          <div class="section-head">
+            <h2 id="recommendTitle">当前月龄推荐</h2>
+          </div>
+          <div class="cards" id="stageCards"></div>
+        </section>
+      </section>
+
+      <section class="view" data-view="articles" aria-labelledby="articlesTitle">
+        <div class="sticky-title">
+          <h2 id="articlesTitle">育儿百科</h2>
+          <button type="button" data-nav="today">返回</button>
+        </div>
+        <div class="age-tabs" aria-label="年龄阶段">
+          <button class="is-selected" type="button">0-6月</button>
+          <button type="button">7-12月</button>
+          <button type="button">1-2岁</button>
+          <button type="button">2-3岁</button>
+          <button type="button">3-5岁</button>
+        </div>
+        <div class="topic-map">
+          <article><h3>喂养营养</h3><p>母乳、奶粉、辅食、过敏、挑食、餐具。</p></article>
+          <article><h3>健康护理</h3><p>发烧、腹泻、湿疹、咳嗽、便秘、就医判断。</p></article>
+          <article><h3>发育教育</h3><p>动作、语言、认知、社交、亲子阅读、入园准备。</p></article>
+          <article><h3>行为情绪</h3><p>发脾气、打人、咬人、分离焦虑和规则建立。</p></article>
+        </div>
+        <div class="list" id="articleList"></div>
+      </section>
+
+      <section class="view" data-view="care" aria-labelledby="careTitle">
+        <div class="sticky-title">
+          <h2 id="careTitle">疫苗与儿保</h2>
+          <button type="button" data-nav="today">返回</button>
+        </div>
+        <div class="notice">
+          <strong>专业提示</strong>
+          <p>默认展示国家免疫规划和 0-6 岁儿童健康管理节点，实际接种以当地疾控、社区卫生服务中心和孩子个体情况为准。</p>
+        </div>
+        <ol class="timeline" id="careTimeline"></ol>
+      </section>
+
+      <section class="view" data-view="products" aria-labelledby="productsTitle">
+        <div class="sticky-title">
+          <h2 id="productsTitle">用品与安全</h2>
+          <button type="button" data-nav="today">返回</button>
+        </div>
+        <div class="notice">
+          <strong>选购原则</strong>
+          <p>用品页不直接说“买哪个”，先判断要不要用、适用年龄、怎么选、怎么用和常见错误。</p>
+        </div>
+        <div class="list" id="productList"></div>
+      </section>
+
+      <section class="view" data-view="learning" aria-labelledby="learningTitle">
+        <div class="sticky-title">
+          <h2 id="learningTitle">学习路径</h2>
+          <button type="button" data-nav="today">返回</button>
+        </div>
+        <article class="course-card">
+          <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=900&q=80" alt="家长和孩子一起阅读">
+          <div>
+            <p class="eyebrow">图文 + 视频 + 对话模板</p>
+            <h3>系统学，不刷信息流</h3>
+            <p>每个专题都有学习地图、记忆卡和家庭待办。</p>
+          </div>
+        </article>
+        <div class="list" id="learningList"></div>
+      </section>
+
+      <section class="view" data-view="sleep" aria-labelledby="sleepTitle">
+        <div class="sticky-title">
+          <h2 id="sleepTitle">睡眠与哄睡</h2>
+          <button type="button" data-nav="today">返回</button>
+        </div>
+        <img class="wide-img" src="https://images.unsplash.com/photo-1566004100631-35d015d6a491?auto=format&fit=crop&w=900&q=80" alt="熟睡的婴儿">
+        <article class="detail-card">
+          <p class="eyebrow" id="sleepStage">按当前月龄</p>
+          <h3>哄睡重点</h3>
+          <ul id="sleepList"></ul>
+        </article>
+        <div class="list">
+          <article class="row-card"><h3>固定睡前流程</h3><p>洗澡、拉窗帘、读书、关灯，顺序比时长更重要。</p></article>
+          <article class="row-card"><h3>夜醒处理</h3><p>先观察，再低刺激安抚，避免强光和长时间逗玩。</p></article>
+          <article class="row-card"><h3>抱睡转床</h3><p>先稳睡，再臀部、背部、头部分段放下。</p></article>
+        </div>
+      </section>
+
+      <section class="view" data-view="detail" aria-labelledby="detailTitle">
+        <div class="sticky-title">
+          <h2 id="detailTitle">详情</h2>
+          <button type="button" id="detailBack">返回</button>
+        </div>
+        <div id="detailPanel"></div>
+      </section>
+
+      <nav class="bottom-nav" aria-label="底部导航">
+        <button class="is-active" type="button" data-nav="today">今日</button>
+        <button type="button" data-nav="articles">百科</button>
+        <button type="button" data-nav="care">儿保</button>
+        <button type="button" data-nav="products">用品</button>
+        <button type="button" data-nav="learning">学习</button>
+      </nav>
+    </section>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
