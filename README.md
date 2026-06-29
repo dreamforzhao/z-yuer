@@ -33,6 +33,7 @@
 | `parenting-map-fullstack/` | 当前主项目：本地 Node 服务 + 移动端原型 |
 | `parenting-map-fullstack/data/product-model.js` | 结构化产品模型，后续 UI/CMS/推荐逻辑优先读取 |
 | `parenting-map-fullstack/docs/product-model.md` | 产品模型说明，后续设计和开发的主要文字依据 |
+| `parenting-map-fullstack/design-qa.md` | 当前移动端原型的视觉来源、截图证据和设计核对结论 |
 | `parenting-map-prototype/` | 历史原型资料，仅作参考，不作为当前产品方向来源 |
 
 ## 运行
@@ -54,6 +55,7 @@ http://localhost:4173/
 
 1. `parenting-map-fullstack/docs/product-model.md`
 2. `parenting-map-fullstack/data/product-model.js`
+3. `parenting-map-fullstack/design-qa.md`
 
 不要根据旧文档、旧页面或竞品惯性把产品改回以下方向：
 

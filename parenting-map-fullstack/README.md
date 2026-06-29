@@ -80,3 +80,4 @@ http://localhost:4173/
 
 - `data/product-model.js`
 - `docs/product-model.md`
+- `design-qa.md`
