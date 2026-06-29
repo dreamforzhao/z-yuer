@@ -4,10 +4,13 @@ import { extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   articles,
+  articleLearningMeta,
   careSchedule,
   checkupRecords,
   childProfile,
+  decisionTools,
   encyclopediaSections,
+  knowledgeTracks,
   products,
   stageRules
 } from "./data/seed.js";
@@ -33,6 +36,7 @@ function sendJson(response, status, payload) {
 }
 
 function asNumber(value, fallback) {
+  if (value === null || value === undefined || value === "") return fallback;
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
 }
@@ -65,6 +69,7 @@ function getCareStatus(ageMonths, nodeAge) {
 function profileFromQuery(url) {
   return {
     ...childProfile,
+    nickname: url.searchParams.get("nickname") || childProfile.nickname,
     birthDate: url.searchParams.get("birthDate") || childProfile.birthDate,
     sex: url.searchParams.get("sex") || childProfile.sex,
     city: url.searchParams.get("city") || childProfile.city,
@@ -105,6 +110,30 @@ function buildGrowthAdvice(profile, age) {
   };
 }
 
+function hydrateArticle(article) {
+  if (!article) return article;
+  return {
+    ...article,
+    learning: articleLearningMeta[article.id] || null
+  };
+}
+
+function buildKnowledgePayload() {
+  return {
+    tracks: knowledgeTracks,
+    decisionTools,
+    sourceNote: "健康内容优先采用权威机构资料整理，产品内展示来源和审核状态。"
+  };
+}
+
+function getRecommendedLessons(age) {
+  const health = knowledgeTracks.find((track) => track.id === "health-foundation");
+  const feeding = knowledgeTracks.find((track) => track.id === "feeding-foundation");
+  const sleep = knowledgeTracks.find((track) => track.id === "sleep-behavior-foundation");
+  if (age.months < 12) return [feeding.modules[0], health.modules[0], health.modules[1]];
+  if (age.months < 36) return [feeding.modules[2], sleep.modules[2], health.modules[1]];
+  return [sleep.modules[2], health.modules[1], sleep.modules[1]];
+}
 function buildHome(profile) {
   const age = calculateAge(profile.birthDate);
   const stage = getStage(age.months);
@@ -123,15 +152,18 @@ function buildHome(profile) {
     feedingTips,
     growth,
     carePreview,
+    knowledgeTracks,
+    decisionTools,
+    recommendedLessons: getRecommendedLessons(age),
     commonEntrances: [
-      { title: "喂养建议", target: "feeding", type: "section" },
-      { title: "身高体重", target: "growth", type: "view" },
-      { title: "儿保提醒", target: "care", type: "view" },
-      { title: "睡眠哄睡", target: "sleep", type: "section" },
-      { title: "用品安全", target: "gear", type: "section" },
-      { title: "发烧处理", target: "fever-home", type: "article" },
-      { title: "辅食问题", target: "food-8m", type: "article" },
-      { title: "行为情绪", target: "behavior", type: "section" }
+      { title: "月龄辅食", target: "feeding-month-guide", type: "article" },
+      { title: "辅食开吃", target: "feeding-6m-start", type: "article" },
+      { title: "发热判断", target: "fever-home", type: "article" },
+      { title: "疫苗儿保", target: "vaccine-checkup", type: "article" },
+      { title: "哄睡夜醒", target: "sleep-night-waking", type: "article" },
+      { title: "用品评测", target: "gear", type: "section" },
+      { title: "情绪行为", target: "behavior", type: "section" },
+      { title: "安全座椅", target: "car-seat", type: "product" }
     ]
   };
 }
@@ -143,7 +175,7 @@ function searchAll(query) {
   const matches = [];
 
   if (q === "体重" || q === "身高" || q === "身长" || q.includes("身高体重")) {
-    return [{ type: "view", id: "growth", title: "身高体重记录", subtitle: "记录出生和每次儿保数据" }];
+    return [{ type: "section", id: "health", title: "健康管理", subtitle: "儿保、疫苗、身高体重都在这里" }];
   }
 
   for (const section of encyclopediaSections) {
@@ -154,11 +186,15 @@ function searchAll(query) {
   }
 
   for (const article of articles) {
-    const haystack = [article.title, article.topic, article.ageRange, ...article.summary].join(" ").toLowerCase();
+    const learning = articleLearningMeta[article.id];
+    const deepText = learning ? [learning.keyQuestion, learning.principle, ...learning.learningGoals, ...learning.commonMistakes].join(" ") : "";
+    const haystack = [article.title, article.topic, article.ageRange, ...article.summary, deepText].join(" ").toLowerCase();
     const intentMatch =
+      ((q.includes("月龄") || q.includes("怎么做")) && article.id === "feeding-month-guide") ||
       (q.includes("辅食") && article.id === "food-8m") ||
       ((q.includes("发烧") || q.includes("发热")) && article.id === "fever-home") ||
-      ((q.includes("哄睡") || q.includes("睡")) && article.id === "sleep-routine") ||
+      ((q.includes("哄睡") || q.includes("睡前")) && article.id === "sleep-routine") ||
+      ((q.includes("夜醒") || q.includes("睡眠倒退")) && article.id === "sleep-night-waking") ||
       ((q.includes("发脾气") || q.includes("不听话") || q.includes("打人")) && article.id === "tantrum-2y");
     if (haystack.includes(q) || intentMatch) {
       matches.push({ type: "article", id: article.id, title: article.title, subtitle: article.topic });
@@ -177,14 +213,20 @@ function searchAll(query) {
   }
 
   if (q.includes("疫苗") || q.includes("儿保") || q.includes("体检")) {
-    matches.unshift({ type: "view", id: "care", title: "疫苗与儿保时间轴", subtitle: `${childProfile.city} · 本地门诊确认` });
+    matches.unshift({ type: "article", id: "vaccine-checkup", title: "疫苗和儿保日程", subtitle: "健康 · 本地门诊确认" });
   }
 
   if (q.includes("体重") || q.includes("身高") || q.includes("身长")) {
-    matches.unshift({ type: "view", id: "growth", title: "身高体重记录", subtitle: "记录出生和每次儿保数据" });
+    matches.unshift({ type: "section", id: "health", title: "健康管理", subtitle: "儿保、疫苗、身高体重都在这里" });
   }
 
-  return matches.slice(0, 8);
+  const seen = new Set();
+  return matches.filter((item) => {
+    const key = `${item.type}:${item.id}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).slice(0, 8);
 }
 
 async function serveStatic(pathname, response) {
@@ -225,10 +267,15 @@ function handleApi(url, response) {
     return true;
   }
 
+  if (url.pathname === "/api/knowledge") {
+    sendJson(response, 200, buildKnowledgePayload());
+    return true;
+  }
+
   if (url.pathname === "/api/encyclopedia") {
     sendJson(response, 200, encyclopediaSections.map((section) => ({
       ...section,
-      articles: articles.filter((article) => article.sectionId === section.id),
+      articles: articles.filter((article) => article.sectionId === section.id).map(hydrateArticle),
       products: products.filter((product) => product.sectionId === section.id)
     })));
     return true;
@@ -237,13 +284,13 @@ function handleApi(url, response) {
   if (url.pathname === "/api/articles") {
     const sectionId = url.searchParams.get("sectionId");
     const result = sectionId ? articles.filter((article) => article.sectionId === sectionId) : articles;
-    sendJson(response, 200, result);
+    sendJson(response, 200, result.map(hydrateArticle));
     return true;
   }
 
   if (url.pathname.startsWith("/api/articles/")) {
     const id = decodeURIComponent(url.pathname.split("/").at(-1));
-    const article = articles.find((item) => item.id === id);
+    const article = hydrateArticle(articles.find((item) => item.id === id));
     sendJson(response, article ? 200 : 404, article || { error: "ARTICLE_NOT_FOUND" });
     return true;
   }

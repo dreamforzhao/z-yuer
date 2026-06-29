@@ -9,9 +9,13 @@
 <body>
   <main class="app-shell">
     <section class="phone" aria-label="养育地图 App">
+      <div class="status-bar" aria-hidden="true">
+        <span>9:41</span>
+        <span>●●● 5G 82%</span>
+      </div>
       <header class="app-header">
         <div>
-          <p class="eyebrow">中国大陆家庭 · 0-5岁</p>
+          <p class="eyebrow">0-5岁育儿知识学习</p>
           <h1>养育地图</h1>
         </div>
         <button class="avatar-btn" type="button" aria-label="孩子昵称" id="childAvatar">昕</button>
@@ -19,12 +23,20 @@
 
       <section class="view is-active" data-view="home" aria-labelledby="homeTitle">
         <section class="child-dashboard">
-          <div>
-            <p class="eyebrow">我的孩子</p>
-            <h2 id="homeTitle">昕昕的成长画像</h2>
-            <p class="muted" id="ageLine">加载中</p>
+          <div class="dashboard-copy">
+            <div>
+              <p class="eyebrow">我的孩子</p>
+              <h2 id="homeTitle">宝宝的成长画像</h2>
+              <p class="muted" id="ageLine">加载中</p>
+            </div>
+            <div class="age-pill" id="stageBadge">分龄</div>
           </div>
-          <div class="age-pill" id="stageBadge">分龄</div>
+          <img class="dashboard-photo" src="./assets/parenting-hero.png" alt="家长抱着婴儿的生活照片">
+          <div class="summary-rail" aria-label="今日摘要">
+            <span><b>2</b>条重点</span>
+            <span><b>8</b>个专题</span>
+            <span><b>5</b>个分栏</span>
+          </div>
         </section>
 
         <form class="profile-panel" id="profileForm">
@@ -33,6 +45,9 @@
             <span id="profileStatus" role="status" aria-live="polite">已载入</span>
           </div>
           <div class="form-grid">
+            <label for="nickname">孩子名字
+              <input id="nickname" name="nickname" type="text" value="昕昕" maxlength="12" autocomplete="off">
+            </label>
             <label for="birthDate">出生日期
               <input id="birthDate" name="birthDate" type="date" max="2026-06-28">
             </label>
@@ -40,15 +55,6 @@
               <select id="sex" name="sex">
                 <option>男孩</option>
                 <option>女孩</option>
-              </select>
-            </label>
-            <label for="city">城市
-              <select id="city" name="city">
-                <option>上海</option>
-                <option>北京</option>
-                <option>广州</option>
-                <option>深圳</option>
-                <option>杭州</option>
               </select>
             </label>
             <label for="feedingType">喂养方式
@@ -83,36 +89,58 @@
         </form>
 
         <form class="search-box" id="searchForm">
-          <label for="searchInput">查百科</label>
+          <label for="searchInput">查知识库</label>
           <div class="search-row">
-            <input id="searchInput" type="search" placeholder="辅食、发烧、体重、尿不湿、安全座椅">
+            <input id="searchInput" type="search" placeholder="发热怎么判断、辅食为什么不吃、夜醒先排查什么">
             <button type="submit">搜索</button>
+          </div>
+          <div class="quick-search" aria-label="快捷搜索">
+            <button type="submit" data-query="发烧">发烧</button>
+            <button type="submit" data-query="月龄辅食">月龄辅食</button>
+            <button type="submit" data-query="夜醒">夜醒</button>
           </div>
         </form>
         <div class="search-results" id="searchResults" role="status" aria-live="polite"></div>
 
+
+        <section class="section-block knowledge-block" aria-labelledby="knowledgeTitle">
+          <div class="section-head">
+            <h2 id="knowledgeTitle">今日学习</h2>
+            <span>建立判断力</span>
+          </div>
+          <div class="knowledge-roadmap" id="knowledgeRoadmap"></div>
+        </section>
+        <section class="section-block" aria-labelledby="entryTitle">
+          <div class="section-head">
+            <h2 id="entryTitle">问题判断入口</h2>
+          </div>
+          <nav class="entry-grid" id="commonEntrances" aria-label="常用入口"></nav>
+        </section>
+
+
         <section class="section-block" aria-labelledby="growthTitle">
           <div class="section-head">
-            <h2 id="growthTitle">根据档案生成的建议</h2>
+            <h2 id="growthTitle">少量提醒</h2>
             <span>非诊断</span>
           </div>
           <div class="insight-list" id="insightList"></div>
-        </section>
-
-        <section class="section-block" aria-labelledby="entryTitle">
-          <div class="section-head">
-            <h2 id="entryTitle">常用入口</h2>
-          </div>
-          <nav class="entry-grid" id="commonEntrances" aria-label="常用入口"></nav>
         </section>
       </section>
 
       <section class="view" data-view="encyclopedia" aria-labelledby="encyTitle">
         <div class="sticky-title">
-          <h2 id="encyTitle">育儿百科</h2>
+          <h2 id="encyTitle">知识库</h2>
           <button type="button" data-nav="home">返回</button>
         </div>
-        <p class="page-intro">像逛分类一样，从大类进小类；用品、睡眠、学习内容都收在百科里。</p>
+        <p class="page-intro">先按课程建立判断力，再进入具体问题。每篇内容包含结论、原理、判断框架、操作、误区和来源。</p>
+        <div class="track-list" id="trackList"></div>
+        <nav class="category-tabs" aria-label="百科分栏">
+          <button class="is-selected" type="button" data-section-id="feeding">喂养</button>
+          <button type="button" data-section-id="health">健康</button>
+          <button type="button" data-section-id="sleep">睡眠</button>
+          <button type="button" data-section-id="gear">用品</button>
+          <button type="button" data-section-id="behavior">行为</button>
+        </nav>
         <div class="category-grid" id="categoryGrid"></div>
         <section class="section-block" id="sectionDetail" hidden>
           <div class="section-head">
@@ -164,7 +192,7 @@
           <button type="button" data-nav="home">返回</button>
         </div>
         <div class="list">
-          <article class="row-card"><h3>孩子档案</h3><p>出生日期、身高体重、喂养方式、城市。</p></article>
+          <article class="row-card"><h3>孩子档案</h3><p>名字、出生日期、身高体重、喂养方式。</p></article>
           <article class="row-card"><h3>家庭成员</h3><p>爸爸、妈妈、老人共同查看提醒和收藏。</p></article>
           <article class="row-card"><h3>收藏与记录</h3><p>后续接入阅读历史、收藏、提醒和外部链接管理。</p></article>
         </div>
@@ -179,11 +207,11 @@
       </section>
 
       <nav class="bottom-nav" aria-label="底部导航">
-        <button class="is-active" type="button" data-nav="home">首页</button>
-        <button type="button" data-nav="encyclopedia">百科</button>
-        <button type="button" data-nav="care">儿保</button>
-        <button type="button" data-nav="growth">成长</button>
-        <button type="button" data-nav="me">我的</button>
+        <button class="is-active" type="button" data-nav="home"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11.2 12 4l8 7.2"/><path d="M6.5 10.5V20h11v-9.5"/><path d="M9.5 20v-5h5v5"/></svg></span>今日</button>
+        <button type="button" data-nav="encyclopedia" data-section-id="feeding"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 5c5 1 8 5 8 10a5 5 0 0 1-8 4c-3-2-3-7 0-14z"/><path d="M14 8c2-2 4-3 6-3 0 4-2 7-6 8"/></svg></span>喂养</button>
+        <button type="button" data-nav="encyclopedia" data-section-id="health"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/><path d="M7.5 4.5h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9a3 3 0 0 1 3-3z"/></svg></span>健康</button>
+        <button type="button" data-nav="encyclopedia" data-section-id="sleep"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M18 15.5A7 7 0 0 1 8.5 6 8 8 0 1 0 18 15.5z"/><path d="M16.5 5.5h3l-3 4h3"/></svg></span>睡眠</button>
+        <button type="button" data-nav="encyclopedia" data-section-id="gear"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 8h10l1.5 11h-13z"/><path d="M9 8a3 3 0 0 1 6 0"/><path d="M9 13h6"/></svg></span>用品</button>
       </nav>
     </section>
   </main>
