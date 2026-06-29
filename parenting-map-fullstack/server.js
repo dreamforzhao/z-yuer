@@ -14,6 +14,7 @@ import {
   products,
   stageRules
 } from "./data/seed.js";
+import { productModel } from "./data/product-model.js";
 
 const rootDir = fileURLToPath(new URL(".", import.meta.url));
 const publicDir = join(rootDir, "public");
@@ -269,6 +270,11 @@ function handleApi(url, response) {
 
   if (url.pathname === "/api/knowledge") {
     sendJson(response, 200, buildKnowledgePayload());
+    return true;
+  }
+
+  if (url.pathname === "/api/product-model") {
+    sendJson(response, 200, productModel);
     return true;
   }
 

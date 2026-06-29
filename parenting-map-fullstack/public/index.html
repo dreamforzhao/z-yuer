@@ -3,215 +3,174 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>养育地图 Fullstack</title>
+  <title>育儿百科</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <main class="app-shell">
-    <section class="phone" aria-label="养育地图 App">
+  <main class="shell">
+    <section class="phone" aria-label="育儿百科 App 原型">
       <div class="status-bar" aria-hidden="true">
         <span>9:41</span>
-        <span>●●● 5G 82%</span>
+        <span>5G 82%</span>
       </div>
-      <header class="app-header">
-        <div>
-          <p class="eyebrow">0-5岁育儿知识学习</p>
-          <h1>养育地图</h1>
-        </div>
-        <button class="avatar-btn" type="button" aria-label="孩子昵称" id="childAvatar">昕</button>
-      </header>
 
-      <section class="view is-active" data-view="home" aria-labelledby="homeTitle">
-        <section class="child-dashboard">
-          <div class="dashboard-copy">
+      <section class="screen is-active" data-screen="home">
+        <header class="topbar">
+          <div>
+            <h1>育儿百科</h1>
+            <p>权威 · 专业 · 科学</p>
+          </div>
+          <button class="profile-dot" type="button" data-go="profile" aria-label="查看宝宝档案">宝</button>
+        </header>
+
+        <section class="baby-strip" aria-label="宝宝健康节点">
+          <div class="baby-main">
+            <span class="round-mark">8月</span>
             <div>
-              <p class="eyebrow">我的孩子</p>
-              <h2 id="homeTitle">宝宝的成长画像</h2>
-              <p class="muted" id="ageLine">加载中</p>
+              <p class="label">宝宝 8个月16天</p>
+              <strong>下一个健康节点：9月龄儿保</strong>
             </div>
-            <div class="age-pill" id="stageBadge">分龄</div>
           </div>
-          <img class="dashboard-photo" src="./assets/parenting-hero.png" alt="家长抱着婴儿的生活照片">
-          <div class="summary-rail" aria-label="今日摘要">
-            <span><b>2</b>条重点</span>
-            <span><b>8</b>个专题</span>
-            <span><b>5</b>个分栏</span>
-          </div>
+          <button type="button" data-go="profile">查看</button>
+          <p class="node-line">下次儿保：2026-07-05 · 已打疫苗 4 次</p>
         </section>
 
-        <form class="profile-panel" id="profileForm">
-          <div class="section-head">
-            <h2>基础信息</h2>
-            <span id="profileStatus" role="status" aria-live="polite">已载入</span>
-          </div>
-          <div class="form-grid">
-            <label for="nickname">孩子名字
-              <input id="nickname" name="nickname" type="text" value="昕昕" maxlength="12" autocomplete="off">
-            </label>
-            <label for="birthDate">出生日期
-              <input id="birthDate" name="birthDate" type="date" max="2026-06-28">
-            </label>
-            <label for="sex">性别
-              <select id="sex" name="sex">
-                <option>男孩</option>
-                <option>女孩</option>
-              </select>
-            </label>
-            <label for="feedingType">喂养方式
-              <select id="feedingType" name="feedingType">
-                <option>母乳</option>
-                <option>奶粉</option>
-                <option>混合喂养</option>
-              </select>
-            </label>
-          </div>
-        </form>
-
-        <form class="profile-panel" id="growthForm">
-          <div class="section-head">
-            <h2>出生和本次儿保</h2>
-            <button class="soft-btn" type="button" data-nav="growth">看趋势</button>
-          </div>
-          <div class="form-grid growth-grid">
-            <label for="birthWeightKg">出生体重 kg
-              <input id="birthWeightKg" name="birthWeightKg" type="number" min="0.5" max="8" step="0.01">
-            </label>
-            <label for="birthLengthCm">出生体长 cm
-              <input id="birthLengthCm" name="birthLengthCm" type="number" min="25" max="70" step="0.1">
-            </label>
-            <label for="currentWeightKg">本次体重 kg
-              <input id="currentWeightKg" name="currentWeightKg" type="number" min="1" max="35" step="0.01">
-            </label>
-            <label for="currentHeightCm">本次身长 cm
-              <input id="currentHeightCm" name="currentHeightCm" type="number" min="35" max="130" step="0.1">
-            </label>
-          </div>
-        </form>
-
-        <form class="search-box" id="searchForm">
-          <label for="searchInput">查知识库</label>
+        <form class="search-panel" id="searchForm">
+          <label for="searchInput">查问题</label>
           <div class="search-row">
-            <input id="searchInput" type="search" placeholder="发热怎么判断、辅食为什么不吃、夜醒先排查什么">
-            <button type="submit">搜索</button>
+            <input id="searchInput" type="search" placeholder="发烧、辅食、夜醒、疫苗…" autocomplete="off">
+            <button type="submit">查问题</button>
           </div>
-          <div class="quick-search" aria-label="快捷搜索">
-            <button type="submit" data-query="发烧">发烧</button>
-            <button type="submit" data-query="月龄辅食">月龄辅食</button>
-            <button type="submit" data-query="夜醒">夜醒</button>
+          <div class="hot-row" aria-label="热门搜索">
+            <span>热门搜索</span>
+            <button type="button" data-query="发烧怎么判断">发烧怎么判断</button>
+            <button type="button" data-query="辅食添加顺序">辅食添加顺序</button>
+            <button type="button" data-query="夜醒怎么办">夜醒怎么办</button>
           </div>
         </form>
-        <div class="search-results" id="searchResults" role="status" aria-live="polite"></div>
 
-
-        <section class="section-block knowledge-block" aria-labelledby="knowledgeTitle">
-          <div class="section-head">
-            <h2 id="knowledgeTitle">今日学习</h2>
-            <span>建立判断力</span>
+        <section class="quick-block" aria-labelledby="quickTitle">
+          <div class="section-title">
+            <h2 id="quickTitle">常见问题 · 快速入口</h2>
+            <button type="button" data-go="knowledge">全部分类</button>
           </div>
-          <div class="knowledge-roadmap" id="knowledgeRoadmap"></div>
-        </section>
-        <section class="section-block" aria-labelledby="entryTitle">
-          <div class="section-head">
-            <h2 id="entryTitle">问题判断入口</h2>
-          </div>
-          <nav class="entry-grid" id="commonEntrances" aria-label="常用入口"></nav>
+          <div class="quick-grid" id="quickGrid"></div>
         </section>
 
-
-        <section class="section-block" aria-labelledby="growthTitle">
-          <div class="section-head">
-            <h2 id="growthTitle">少量提醒</h2>
-            <span>非诊断</span>
+        <section class="answer-card" aria-labelledby="answerTitle">
+          <div class="answer-head">
+            <span>精选回答</span>
+            <button type="button" data-detail="fever">先看结论</button>
           </div>
-          <div class="insight-list" id="insightList"></div>
+          <h2 id="answerTitle">发烧怎么判断？</h2>
+          <div class="answer-section good">
+            <h3>先看结论</h3>
+            <p>腋下体温 ≥ 37.5℃ 为发热。多数轻中度发热可以先观察精神、饮水和尿量；出现异常信号时及时就医。</p>
+          </div>
+          <div class="answer-section risk">
+            <h3>风险信号</h3>
+            <div class="risk-tags">
+              <span>3个月以下发热</span>
+              <span>持续高热 &gt; 3天</span>
+              <span>精神差/嗜睡</span>
+              <span>抽搐</span>
+              <span>呼吸急促</span>
+            </div>
+          </div>
+          <div class="related-plan">
+            <div>
+              <h3>相关计划</h3>
+              <p>根据宝宝情况，选择合适的护理与就医计划</p>
+            </div>
+            <button type="button" data-plan="fever-care">查看计划</button>
+          </div>
         </section>
-      </section>
 
-      <section class="view" data-view="encyclopedia" aria-labelledby="encyTitle">
-        <div class="sticky-title">
-          <h2 id="encyTitle">知识库</h2>
-          <button type="button" data-nav="home">返回</button>
-        </div>
-        <p class="page-intro">先按课程建立判断力，再进入具体问题。每篇内容包含结论、原理、判断框架、操作、误区和来源。</p>
-        <div class="track-list" id="trackList"></div>
-        <nav class="category-tabs" aria-label="百科分栏">
-          <button class="is-selected" type="button" data-section-id="feeding">喂养</button>
-          <button type="button" data-section-id="health">健康</button>
-          <button type="button" data-section-id="sleep">睡眠</button>
-          <button type="button" data-section-id="gear">用品</button>
-          <button type="button" data-section-id="behavior">行为</button>
-        </nav>
-        <div class="category-grid" id="categoryGrid"></div>
-        <section class="section-block" id="sectionDetail" hidden>
-          <div class="section-head">
-            <h2 id="sectionTitle">分类详情</h2>
-            <button class="soft-btn" type="button" id="closeSection">收起</button>
+        <section class="continue-block" aria-labelledby="continueTitle">
+          <div class="section-title">
+            <h2 id="continueTitle">继续计划</h2>
+            <button type="button" data-go="plans">全部计划</button>
           </div>
-          <p class="muted" id="sectionSubtitle"></p>
-          <div class="tag-list" id="sectionTags"></div>
-          <div class="list" id="sectionItems"></div>
-        </section>
-      </section>
-
-      <section class="view" data-view="care" aria-labelledby="careTitle">
-        <div class="sticky-title">
-          <h2 id="careTitle">疫苗与儿保</h2>
-          <button type="button" data-nav="home">返回</button>
-        </div>
-        <div class="notice">
-          <strong>专业提示</strong>
-          <p>默认展示国家免疫规划和 0-6 岁儿童健康管理节点，实际接种以当地疾控、社区卫生服务中心和孩子个体情况为准。</p>
-        </div>
-        <ol class="timeline" id="careTimeline"></ol>
-      </section>
-
-      <section class="view" data-view="growth" aria-labelledby="growthPageTitle">
-        <div class="sticky-title">
-          <h2 id="growthPageTitle">成长记录</h2>
-          <button type="button" data-nav="home">返回</button>
-        </div>
-        <section class="section-block">
-          <div class="section-head">
-            <h2>身高体重趋势</h2>
-            <span id="growthAge">当前月龄</span>
+          <div class="plan-row">
+            <span class="plan-mark">辅</span>
+            <div>
+              <strong>辅食计划 · 8-9月龄</strong>
+              <p>今天任务：尝试软烂的碎菜</p>
+            </div>
+            <button type="button" data-plan="solid-food">继续</button>
           </div>
-          <div class="metric-grid" id="metricGrid"></div>
-          <div class="insight-list" id="growthAdvice"></div>
-        </section>
-        <section class="section-block">
-          <div class="section-head">
-            <h2>历史儿保记录</h2>
+          <div class="plan-row">
+            <span class="plan-mark blue">检</span>
+            <div>
+              <strong>下次儿保 · 9月龄</strong>
+              <p>预约时间：2026-07-05</p>
+            </div>
+            <button type="button" data-go="profile">详情</button>
           </div>
-          <div class="record-list" id="recordList"></div>
         </section>
       </section>
 
-      <section class="view" data-view="me" aria-labelledby="meTitle">
-        <div class="sticky-title">
-          <h2 id="meTitle">我的</h2>
-          <button type="button" data-nav="home">返回</button>
-        </div>
-        <div class="list">
-          <article class="row-card"><h3>孩子档案</h3><p>名字、出生日期、身高体重、喂养方式。</p></article>
-          <article class="row-card"><h3>家庭成员</h3><p>爸爸、妈妈、老人共同查看提醒和收藏。</p></article>
-          <article class="row-card"><h3>收藏与记录</h3><p>后续接入阅读历史、收藏、提醒和外部链接管理。</p></article>
-        </div>
+      <section class="screen" data-screen="knowledge">
+        <header class="page-head">
+          <button type="button" data-go="home">返回</button>
+          <h2>知识百科</h2>
+        </header>
+        <p class="page-copy">先看结论，再看风险和行动计划。每个问题都尽量落到可执行步骤。</p>
+        <div class="category-list" id="categoryList"></div>
+        <div class="entry-list" id="entryList"></div>
       </section>
 
-      <section class="view" data-view="detail" aria-labelledby="detailTitle">
-        <div class="sticky-title">
+      <section class="screen" data-screen="plans">
+        <header class="page-head">
+          <button type="button" data-go="home">返回</button>
+          <h2>行动计划</h2>
+        </header>
+        <p class="page-copy">把长知识拆成每天能做的一件事。计划不是打卡压力，是给家长一个稳稳的下一步。</p>
+        <div class="plan-list" id="planList"></div>
+      </section>
+
+      <section class="screen" data-screen="profile">
+        <header class="page-head">
+          <button type="button" data-go="home">返回</button>
+          <h2>宝宝档案</h2>
+        </header>
+        <section class="profile-panel">
+          <div class="profile-row">
+            <span>宝宝</span>
+            <strong>昕昕 · 8个月16天</strong>
+          </div>
+          <div class="profile-row">
+            <span>关注</span>
+            <strong>辅食添加、夜醒、疫苗接种</strong>
+          </div>
+          <div class="node-stats">
+            <article><b>4</b><span>疫苗次数</span></article>
+            <article><b>3</b><span>儿保次数</span></article>
+          </div>
+        </section>
+        <section class="timeline-panel">
+          <h3>健康节点</h3>
+          <ol>
+            <li class="done"><span>已完成</span><strong>8月龄疫苗接种</strong><p>2026-06-05</p></li>
+            <li class="next"><span>下一步</span><strong>9月龄儿保</strong><p>2026-07-05 · 关注辅食和营养评估</p></li>
+            <li><span>待安排</span><strong>12月龄体检</strong><p>到龄前 7 天提醒</p></li>
+          </ol>
+        </section>
+      </section>
+
+      <section class="screen" data-screen="detail">
+        <header class="page-head">
+          <button type="button" data-back>返回</button>
           <h2 id="detailTitle">详情</h2>
-          <button type="button" id="detailBack">返回</button>
-        </div>
-        <div id="detailPanel"></div>
+        </header>
+        <div id="detailBody"></div>
       </section>
 
       <nav class="bottom-nav" aria-label="底部导航">
-        <button class="is-active" type="button" data-nav="home"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11.2 12 4l8 7.2"/><path d="M6.5 10.5V20h11v-9.5"/><path d="M9.5 20v-5h5v5"/></svg></span>今日</button>
-        <button type="button" data-nav="encyclopedia" data-section-id="feeding"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 5c5 1 8 5 8 10a5 5 0 0 1-8 4c-3-2-3-7 0-14z"/><path d="M14 8c2-2 4-3 6-3 0 4-2 7-6 8"/></svg></span>喂养</button>
-        <button type="button" data-nav="encyclopedia" data-section-id="health"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/><path d="M7.5 4.5h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9a3 3 0 0 1 3-3z"/></svg></span>健康</button>
-        <button type="button" data-nav="encyclopedia" data-section-id="sleep"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M18 15.5A7 7 0 0 1 8.5 6 8 8 0 1 0 18 15.5z"/><path d="M16.5 5.5h3l-3 4h3"/></svg></span>睡眠</button>
-        <button type="button" data-nav="encyclopedia" data-section-id="gear"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 8h10l1.5 11h-13z"/><path d="M9 8a3 3 0 0 1 6 0"/><path d="M9 13h6"/></svg></span>用品</button>
+        <button class="is-active" type="button" data-go="home">首页</button>
+        <button type="button" data-go="knowledge">知识库</button>
+        <button type="button" data-go="plans">计划</button>
+        <button type="button" data-go="profile">我的</button>
       </nav>
     </section>
   </main>
