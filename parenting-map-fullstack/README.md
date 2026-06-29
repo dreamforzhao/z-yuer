@@ -1,20 +1,44 @@
-# 养育地图 Fullstack 原型
+# 育儿百科 Fullstack 原型
 
-这是“养育地图”0-5 岁育儿知识学习 App 的本地全栈原型。产品核心从提示型百科升级为知识学习系统：用课程、判断框架、案例、误区和来源，帮助家长建立健康与喂养判断力。
+这是“育儿百科”的当前主项目，包含本地 Node REST API 和移动端单页原型。
 
-## 已实现
+当前产品方向：**知识百科 + 行动计划**。
 
-- Node 本地 REST API
-- 移动端单页 App 页面
-- 孩子档案：孩子名字、出生日期、性别、喂养方式
-- 自动计算月龄，并推荐今日学习课程
-- 出生体重/体长、本次儿保体重/身长记录
-- 喂养方式：母乳、奶粉、混合喂养
-- 知识库、课程轨道、深度学习详情
-- 疫苗与儿保时间轴
-- 知识分栏：喂养、健康、睡眠、用品、行为
-- 知识轨道：健康判断课、喂养基础课、睡眠与行为课
-- 判断入口：发热先判断、辅食准备度、疫苗儿保、夜醒排查
+## 产品定位
+
+育儿百科帮助家长在真实育儿问题中完成两件事：
+
+1. 快速查到可信答案
+2. 把答案转成可执行的行动计划
+
+宝宝档案只做轻量个性化和健康节点提醒，不做复杂成长记录。
+
+## 当前页面
+
+| 页面 | 说明 |
+|---|---|
+| 首页 | 强搜索、常见问题、精选回答、相关计划、继续计划 |
+| 知识库 | 按症状、喂养、睡眠、行为、疫苗体检等分类浏览百科 |
+| 行动计划 | 查看辅食、睡眠、疫苗准备、疾病护理等计划 |
+| 宝宝档案 | 月龄、关注问题、疫苗次数、儿保体检次数、下次健康节点 |
+| 详情页 | 百科详情或行动计划详情 |
+
+## 当前核心模块
+
+| 模块 | 优先级 | 说明 |
+|---|---|---|
+| 知识百科 | P0 | 搜索和分类入口，回答“宝宝这样怎么办” |
+| 行动计划 | P0 | 每天一件事，把知识变成持续行动 |
+| 宝宝档案 | P1 | 轻量记录月龄、过敏史、疫苗/儿保健康节点 |
+
+## 不做范围
+
+- 不做家庭相册
+- 不做照片/视频成长记录
+- 不做排便、睡眠、喂养流水账
+- 不做独立测评系统
+- 不做社区
+- 不做商城主路径
 
 ## 运行
 
@@ -25,67 +49,34 @@ node server.js
 默认地址：
 
 ```text
-http://localhost:4173
+http://localhost:4173/
 ```
 
 ## API
 
-- `GET /api/health`
-- `GET /api/children/demo`
-- `GET /api/home?nickname=昕昕&birthDate=2025-10-16&sex=男孩&feedingType=混合喂养`
-- `GET /api/knowledge`
-- `GET /api/encyclopedia`
-- `GET /api/articles`
-- `GET /api/articles/:id`
-- `GET /api/products`
-- `GET /api/products/:id`
-- `GET /api/care-schedule?birthDate=2025-10-16&city=上海`
-- `GET /api/growth-records?birthDate=2025-10-16&birthWeightKg=3.25&birthLengthCm=50&currentWeightKg=8.4&currentHeightCm=70.5`
-- `GET /api/search?q=尿不湿`
+| API | 说明 |
+|---|---|
+| `GET /api/health` | 服务健康检查 |
+| `GET /api/product-model` | 当前产品模型，后续开发优先读取 |
+| `GET /api/children/demo` | 示例宝宝档案 |
+| `GET /api/home` | 首页相关数据 |
+| `GET /api/knowledge` | 知识学习数据 |
+| `GET /api/encyclopedia` | 百科分类数据 |
+| `GET /api/articles` | 文章列表 |
+| `GET /api/articles/:id` | 文章详情 |
+| `GET /api/care-schedule` | 疫苗/儿保健康节点 |
+| `GET /api/search?q=发烧` | 搜索 |
 
-## 后续开发建议
+## 后续开发原则
 
-- 前端迁移到 Vue 3 + TypeScript 或 uni-app + Vue 3。
-- 后端迁移到 Spring Boot REST API。
-- 数据层接入 MySQL：孩子档案、内容、用品库、疫苗儿保节点、外部链接。
-- 增加内容 CMS、来源标注、专家审核状态和版本管理。
-- 增加本地疫苗/儿保规则配置。
-- 增加收藏、阅读历史、提醒和家庭成员协作。
+1. 首页继续围绕“查问题”而不是“看记录”。
+2. 百科详情必须保留：结论、风险信号、不要做什么、相关计划。
+3. 行动计划必须可执行，不能只是长文章。
+4. 宝宝档案保持轻量，只服务适龄推荐和疫苗/儿保节点。
+5. 如果要新增记录能力，只能先论证是否服务百科或计划，不要扩展成高频流水账。
+6. 如果要新增测评能力，优先放在百科或计划的前置判断里，不要做独立测评中心。
 
-## APK 打包
+## 关键依据
 
-项目内置了一个轻量 Android WebView 包装工程，目录为 `android-app/`。APK 会加载 `public/` 中的静态页面，并在没有本地 Node API 时自动使用 `offline-data.js` 的内置数据，因此可以作为离线演示版运行。
-
-环境要求：
-
-- JDK：建议使用 `global-env.md` 中的 JDK 21：`C:\Users\gxy\.jdks\ms-21.0.11`。当前工程使用 Android Gradle Plugin 8.5.2，需要现代 JDK。
-- Android SDK：安装 Android Studio 或命令行 SDK，并设置 `ANDROID_HOME` 或 `ANDROID_SDK_ROOT`。
-- Gradle：安装 Gradle，或在 `android-app/` 下生成 `gradlew.bat`。
-
-打包命令：
-
-```powershell
-cd parenting-map-fullstack
-$env:JAVA_HOME='C:\Users\gxy\.jdks\ms-21.0.11'
-$env:Path="$env:JAVA_HOME\bin;$env:Path"
-.\scripts\build-apk.ps1
-```
-
-Debug APK 输出位置：
-
-```text
-parenting-map-fullstack/android-app/app/build/outputs/apk/debug/app-debug.apk
-```
-
-如果提示未找到 Android SDK，先安装 Android Studio，并在 SDK Manager 中安装 Android SDK Platform 35 和 Build-Tools。
-
-## 本地访问排查
-
-推荐直接用脚本启动，避免不同 shell 里的 `node` 路径不一致：
-
-```powershell
-cd parenting-map-fullstack
-.\scripts\start-local.ps1
-```
-
-然后访问：`http://localhost:4173/`。
+- `data/product-model.js`
+- `docs/product-model.md`
