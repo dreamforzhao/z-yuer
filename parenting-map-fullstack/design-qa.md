@@ -1,42 +1,52 @@
-# 设计核对记录
+# Parenting Map Design QA
 
-本文件记录当前移动端原型的视觉来源、实现截图和核对结论，供后续 AI 设计或开发继续读取，避免偏离“知识百科 + 行动计划”的主方向。
+## Product Design v6 Scope
 
-## 当前设计方向
+This iteration changes the main IA to three primary entries only: `宝宝档案`, `育儿百科`, and `健康守护`.
 
-| 项目 | 内容 |
+`健康守护` groups the health-related domains together: `疾病与症状`, `用药安全`, `疫苗`, `心理健康`, `安全与急救`, and `妈妈健康`. `宝宝档案` becomes the default home surface and now emphasizes the child's real profile: height, weight, checkup records, and vaccinated items.
+
+## What Changed
+
+- Bottom navigation now has three entries only: `宝宝档案`, `育儿百科`, `健康守护`.
+- The old `首页 / 知识库 / 计划 / 我的` IA is replaced by a domain-oriented IA.
+- Home is redesigned as a baby archive dashboard:
+  - baby age and next health node
+  - current height and weight
+  - checkup count and latest checkup record
+  - vaccinated item list
+  - three recommended actions for today
+- Knowledge screen now has two panels:
+  - `育儿百科`: growth, feeding, daily care, sleep, early education, and special needs.
+  - `健康守护`: disease/symptom, medication safety, vaccine, mental health, safety/first aid, and maternal health.
+- Profile edit screen is also reframed around archive data, with height, weight, checkup, and vaccine summary.
+
+## Data Source
+
+- Domains and articles: `GET /api/app-data`.
+- Height, weight, and checkup records: `GET /api/growth-records`.
+- Vaccine schedule and completed vaccine nodes: `GET /api/care-schedule`.
+- Current clickable article ids: `food`, `fever`, `cough`, `diarrhea`, `rash`, `vomit`.
+
+## Verification
+
+| Check | Result |
 |---|---|
-| 产品定位 | 知识百科 + 行动计划型育儿 App |
-| 首屏目标 | 家长打开后先能查问题，再能进入可执行计划 |
-| 当前方案 | 方案 1：快速查问题 |
-| 核心信息层级 | 宝宝健康节点、搜索、常见问题、精选回答、相关计划、继续计划 |
-| 不要强化 | 家庭相册、照片/视频成长记录、排便睡眠喂养流水账、独立测评中心、社区、商城 |
+| `node --check server.js` | passed |
+| `node --check public/app.js` | passed |
+| `node --check public/redesign.js` | passed |
+| `GET /api/app-data` | 200, 12 domains and 6 articles |
+| `GET /api/growth-records` | 200, height `70.5`, weight `8.4`, 4 checkup records |
+| `GET /api/care-schedule` | 200, 5 age-eligible vaccine nodes |
+| Static assertion | `宝宝档案`, `育儿百科`, `健康守护`, `身长`, `体重`, `已接种` present in `public/redesign.js` |
+| Static assertion | health domain ids present: `disease_symptom`, `medication_safety`, `vaccine`, `mental_health`, `safety_first_aid`, `maternal_health` |
+| Browser screenshot / DOM dump | skipped: local Chrome escalation was rejected by usage-limit review |
 
-## 视觉来源
+## Findings
 
-| 类型 | 路径 |
-|---|---|
-| ImageGen 参考图 | `C:\Users\24197\.codex\generated_images\019f1368-4d6b-72e2-9e95-d66d68edd028\ig_04d5e0143286be28016a426fe6a21081919144e2ac1d31b798.png` |
-| 首次实现截图 | `qa/home-390x844.png` |
-| 调整后截图 | `qa/home-390x844-v2.png` |
+- P0/P1/P2: none found from syntax, API, and static IA checks.
+- P3: `public/redesign.js` is still an enhancement layer over the original prototype. Once this three-entry IA is accepted, fold it into base HTML/app code and remove old v4/v5 CSS blocks.
 
-## 核对范围
+## Final Result
 
-| 维度 | 结果 |
-|---|---|
-| 视口 | 390 x 844 |
-| 页面 | 首页默认状态 |
-| 主题 | 温和医疗感 + 亲子关怀感，避免社区和相册感 |
-| 信息密度 | 已压缩顶部和快捷入口高度，让精选回答进入首屏 |
-| 交互入口 | 搜索、热门词、快捷问题、百科分类、计划、宝宝档案均可进入 |
-
-## 结论
-
-| 等级 | 结论 |
-|---|---|
-| P0 | 未发现阻断使用的问题 |
-| P1 | 未发现主任务断裂问题 |
-| P2 | 未发现明显视觉错位或文本溢出 |
-| P3 | 快捷入口目前使用文字徽标，后续可替换为正式图标资产 |
-
-当前实现可作为下一阶段继续设计和开发的基准。后续新增页面或组件时，应优先服务“查百科、开计划、每日辅助、健康节点管理、专题学习”这五条任务流。
+Passed with screenshot verification skipped due usage-limit rejection.

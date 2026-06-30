@@ -1,0 +1,26 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.z_yuer.parentingmap'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.z_yuer.parentingmap'
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName '0.1.0'
+    }
+}
+
+def webSourceDir = file('../../public')
+def webAssetsDir = file('src/main/assets/www')
+
+tasks.register('copyWebAssets', Copy) {
+    from webSourceDir
+    into webAssetsDir
+}
+
+preBuild.dependsOn(copyWebAssets)
