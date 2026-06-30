@@ -30,18 +30,54 @@ const healthDomainIds = new Set([
   'maternal_health'
 ]);
 
+const PROFILE_STORAGE_KEY = 'parenting-profile';
+
+const vaccineCatalog = [
+  { id: 'hep-b-1', month: '出生', title: '乙肝疫苗', dose: '第1剂', date: '2025-10-16', cost: '免费' },
+  { id: 'bcg-1', month: '出生', title: '卡介苗', dose: '1剂', date: '2025-10-16', cost: '免费' },
+  { id: 'hep-b-2', month: '1月龄', title: '乙肝疫苗', dose: '第2剂', date: '2025-11-16', cost: '免费' },
+  { id: 'polio-1', month: '2月龄', title: '脊灰疫苗', dose: '第1剂', date: '2025-12-16', cost: '免费' },
+  { id: 'dtap-1', month: '3月龄', title: '百白破疫苗', dose: '第1剂', date: '2026-01-16', cost: '免费' },
+  { id: 'polio-2', month: '3月龄', title: '脊灰疫苗', dose: '第2剂', date: '2026-01-16', cost: '免费' },
+  { id: 'dtap-2', month: '4月龄', title: '百白破疫苗', dose: '第2剂', date: '2026-02-16', cost: '免费' },
+  { id: 'hep-b-3', month: '6月龄', title: '乙肝疫苗', dose: '第3剂', date: '2026-04-16', cost: '免费' },
+  { id: 'men-a-1', month: '6月龄', title: 'A群流脑疫苗', dose: '第1剂', date: '2026-04-16', cost: '免费' },
+  { id: 'mmr-1', month: '8月龄', title: '麻腮风疫苗', dose: '第1剂', date: '2026-06-16', cost: '免费' },
+  { id: 'je-1', month: '8月龄', title: '乙脑疫苗', dose: '第1剂', date: '2026-06-16', cost: '免费' }
+];
+
+const defaultSelectedVaccines = ['hep-b-1', 'bcg-1', 'hep-b-2', 'polio-1'];
+
 const domainArticleIds = {
   feeding_nutrition: ['food'],
   disease_symptom: ['fever', 'cough', 'diarrhea', 'rash', 'vomit']
 };
 
+const articleSectionLabels = {
+  symptom: '症状急查',
+  feeding: '喂养营养'
+};
+
 function savedProfileQuery() {
   try {
-    const raw = localStorage.getItem('parenting-profile');
+    const raw = localStorage.getItem(PROFILE_STORAGE_KEY);
     if (!raw) return '';
     const saved = JSON.parse(raw);
     const params = new URLSearchParams();
-    ['nickname', 'birthDate', 'sex', 'city', 'feedingType', 'allergies', 'currentConcerns', 'vaccineCount', 'checkupCount', 'nextHealthNode'].forEach((key) => {
+    [
+      'nickname',
+      'birthDate',
+      'sex',
+      'feedingType',
+      'allergies',
+      'currentConcerns',
+      'currentWeightKg',
+      'currentHeightCm',
+      'latestCheckupDate',
+      'nextNodeDate',
+      'nextHealthDate',
+      'nextHealthNode'
+    ].forEach((key) => {
       const value = saved?.[key];
       if (value !== undefined && value !== null && String(value).trim()) params.set(key, value);
     });
@@ -101,13 +137,49 @@ function getVaccineRecords(data) {
   return done.slice(0, Number(child.vaccineDone || child.vaccineCount || done.length || 0));
 }
 
+function getSavedProfileObject() {
+  try {
+    const raw = localStorage.getItem(PROFILE_STORAGE_KEY);
+    if (!raw) return {};
+    const saved = JSON.parse(raw);
+    return saved && typeof saved === 'object' ? saved : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveProfilePatch(patch) {
+  const next = { ...getSavedProfileObject(), ...patch };
+  localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(next));
+  return next;
+}
+
+function selectedVaccineIds() {
+  const saved = getSavedProfileObject();
+  return Array.isArray(saved.selectedVaccineIds) ? saved.selectedVaccineIds : defaultSelectedVaccines;
+}
+
+function checkupRows(data) {
+  const saved = getSavedProfileObject();
+  if (Array.isArray(saved.checkupRecords) && saved.checkupRecords.length) return saved.checkupRecords;
+  return (getCheckupRecords(data) || []).map((record) => ({
+    ageMonth: record.ageMonth,
+    date: record.date,
+    weightKg: record.weightKg,
+    heightCm: record.heightCm,
+    note: record.note || ''
+  }));
+}
+
 function cleanProductShell() {
-  document.body.classList.add('product-ia-v6', 'no-plan-mode');
+  document.body.classList.add('product-ia-v6', 'design-polish-v7', 'no-plan-mode');
   document.querySelector('.domain-system-panel')?.remove();
   document.querySelector('[data-screen="home"] .quick-block')?.remove();
   document.querySelector('[data-screen="home"] .continue-block')?.remove();
   document.querySelector('[data-screen="knowledge"] .plan-bridge')?.remove();
   document.querySelector('[data-screen="plans"]')?.remove();
+  document.querySelectorAll('[data-screen="home"] .page-head button, [data-screen="knowledge"] .page-head button, [data-screen="profile"] .page-head button')
+    .forEach((button) => button.remove());
 }
 
 function rewriteBottomNav() {
@@ -115,15 +187,16 @@ function rewriteBottomNav() {
   if (!nav) return;
   const buttons = Array.from(nav.querySelectorAll('button'));
   const config = [
-    { label: '宝宝档案', go: 'home', main: 'archive' },
-    { label: '育儿百科', go: 'knowledge', main: 'encyclopedia', tab: 'encyclopedia' },
-    { label: '健康守护', go: 'knowledge', main: 'health', tab: 'health' }
+    { label: '宝宝档案', icon: '档', go: 'home', main: 'archive' },
+    { label: '育儿百科', icon: '百', go: 'knowledge', main: 'encyclopedia', tab: 'encyclopedia' },
+    { label: '健康守护', icon: '护', go: 'knowledge', main: 'health', tab: 'health' }
   ];
 
   config.forEach((item, index) => {
     const button = buttons[index];
     if (!button) return;
     button.textContent = item.label;
+    button.dataset.navIcon = item.icon;
     button.dataset.go = item.go;
     button.dataset.mainTab = item.main;
     if (item.tab) button.dataset.openKnowledgeTab = item.tab;
@@ -153,9 +226,6 @@ function replaceHome(data) {
   const latestCheckup = records.at(-1);
   const vaccines = getVaccineRecords(data);
   const articles = data.articles || [];
-  const fever = articles.find((article) => article.id === 'fever');
-  const food = articles.find((article) => article.id === 'food');
-  const cough = articles.find((article) => article.id === 'cough');
 
   const topbar = home.querySelector('.topbar');
   if (topbar) {
@@ -176,7 +246,7 @@ function replaceHome(data) {
       <div class="archive-title-v6">
         <span>${E(child.ageLabel || '8个月')}</span>
         <div>
-          <p>${E(child.nickname || '宝宝')} · ${E(child.sex || '宝宝')} · ${E(child.city || '')}</p>
+          <p>${E(child.nickname || '宝宝')} · ${E(child.sex || '宝宝')} · ${E(child.feedingType || '')}</p>
           <h2>${E(child.nextNode?.title || '下次儿保')} · ${E(child.nextNode?.date || '')}</h2>
         </div>
         <button type="button" data-go="profile">编辑</button>
@@ -190,41 +260,19 @@ function replaceHome(data) {
 
   const answer = home.querySelector('.answer-card');
   if (answer) {
-    answer.className = 'answer-card recommendation-card-v6';
-    answer.innerHTML = `
-      <div class="recommend-head-v6">
-        <div>
-          <span>今日推荐</span>
-          <h2>先看这 3 件事</h2>
-        </div>
-      </div>
-      <div class="recommend-list-v6">
-        ${food ? `<button type="button" data-entry="${E(food.id)}"><span>百科</span><strong>${E(food.title)}</strong><p>${E(food.summary || food.subtitle)}</p></button>` : ''}
-        ${fever ? `<button type="button" data-entry="${E(fever.id)}"><span>健康</span><strong>${E(fever.title)}怎么判断</strong><p>${E(fever.summary || fever.subtitle)}</p></button>` : ''}
-        <button type="button" data-open-knowledge-tab="health" data-go="knowledge"><span>节点</span><strong>${E(child.nextNode?.title || '下次健康节点')}</strong><p>${E(child.nextNode?.desc || '准备儿保手册、疫苗记录和近期问题。')}</p></button>
-      </div>
-      <section class="vaccine-summary-v6">
-        <div><span>已接种</span><strong>${vaccines.length || child.vaccineDone || 0}/${child.vaccineTotal || 8}</strong></div>
-        <div class="vaccine-chip-row-v6">
-          ${(vaccines.length ? vaccines : [{ title: '乙肝疫苗第1剂' }, { title: '卡介苗' }, { title: '乙肝疫苗第2剂' }, { title: '脊灰/百白破节点' }]).slice(0, 4).map((item) => `<span>${E(item.title)}</span>`).join('')}
-        </div>
-      </section>
-      <div class="archive-actions-v6">
-        <button type="button" data-open-knowledge-tab="encyclopedia" data-go="knowledge">看育儿百科</button>
-        <button type="button" data-open-knowledge-tab="health" data-go="knowledge">进健康守护</button>
-        ${cough ? `<button type="button" data-entry="${E(cough.id)}">咳嗽急查</button>` : ''}
-      </div>`;
+    answer.remove();
   }
 }
 
 function domainCard(domain, articles, mode) {
   const related = articleByDomain(articles, domain.id);
-  const subdomains = (domain.subdomains || []).slice(0, 6);
+  const subdomains = (domain.subdomains || []).slice(0, 3);
+  const chips = subdomains.map((sub) => `<span>${E(sub.name)}</span>`).join('');
   const body = related.length
-    ? `<div class="domain-article-list-v6">${related.map((article) => articleChip(article)).join('')}</div>`
-    : `<div class="domain-chip-row-v6">${subdomains.map((sub) => `<span>${E(sub.name)}</span>`).join('')}</div>`;
+    ? `<div class="domain-article-list-v6">${related.slice(0, 2).map((article) => articleChip(article)).join('')}</div>`
+    : `<div class="domain-chip-row-v6">${chips}</div>`;
 
-  return `<article class="domain-panel-v6 tone-${domainTone[domain.id] || 'green'} ${mode === 'health' ? 'is-health' : ''}">
+  return `<article class="domain-panel-v6 domain-tile-v7 tone-${domainTone[domain.id] || 'green'} ${mode === 'health' ? 'is-health' : ''}">
     <header>
       <span>${E(domain.name.slice(0, 1))}</span>
       <div>
@@ -240,67 +288,172 @@ function healthQuickCards(articles) {
   return ['fever', 'cough', 'diarrhea', 'rash', 'vomit']
     .map((id) => articles.find((article) => article.id === id))
     .filter(Boolean)
-    .map((article) => `<button class="health-entry-v6" type="button" data-entry="${E(article.id)}"><span>${E(article.title.slice(0, 1))}</span><div><strong>${E(article.title)}</strong><p>${E(article.summary || article.subtitle)}</p></div><b>›</b></button>`)
+    .map((article) => `<button class="health-entry-v6 health-chip-v7" type="button" data-entry="${E(article.id)}"><span>${E(article.title.slice(0, 1))}</span><strong>${E(article.title)}</strong></button>`)
+    .join('');
+}
+
+function articleGroups(articles) {
+  return articles.reduce((groups, article) => {
+    const key = article.sectionId || 'other';
+    groups[key] ||= [];
+    groups[key].push(article);
+    return groups;
+  }, {});
+}
+
+function encyclopediaGroup(sectionId, articles) {
+  return `<section class="category-block-v8">
+    <h3>${E(articleSectionLabels[sectionId] || '百科条目')}</h3>
+    <div>${articles.map((article) => `<button type="button" data-entry="${E(article.id)}">${E(article.title)}</button>`).join('')}</div>
+  </section>`;
+}
+
+function articleRowsV8(articles) {
+  return ['fever', 'cough', 'diarrhea', 'rash', 'vomit', 'food']
+    .map((id) => articles.find((article) => article.id === id))
+    .filter(Boolean)
+    .map((article, index) => `<button class="article-row-v8 tone-${index % 4}" type="button" data-entry="${E(article.id)}">
+      <span>${E(article.title.slice(0, 1))}</span>
+      <div><strong>${E(article.title)}</strong><p>${E(article.summary || article.subtitle || '先看结论、风险信号和处理建议')}</p></div>
+    </button>`)
     .join('');
 }
 
 function replaceKnowledge(data) {
   const box = document.querySelector('[data-screen="knowledge"] .knowledge-map');
   if (!box) return;
-  const domains = data.domains || [];
   const articles = data.articles || [];
-  const encyclopediaDomains = domains.filter((domain) => !healthDomainIds.has(domain.id));
-  const healthDomains = domains.filter((domain) => healthDomainIds.has(domain.id));
+  const groups = articleGroups(articles);
+  const encyclopediaSections = Object.entries(groups);
+  const symptomArticles = groups.symptom || [];
 
-  box.className = 'knowledge-map knowledge-board-v6';
+  box.className = 'knowledge-map knowledge-board-v6 knowledge-board-v7';
   box.innerHTML = `
-    <div class="knowledge-switch-v6" role="tablist" aria-label="主知识分类">
-      <button class="is-active" type="button" role="tab" aria-selected="true" data-k-tab="encyclopedia">育儿百科</button>
-      <button type="button" role="tab" aria-selected="false" data-k-tab="health">健康守护</button>
-    </div>
     <section class="knowledge-panel-v6 is-active" data-k-panel="encyclopedia">
-      <div class="panel-title-v6"><span>百</span><div><h2>育儿百科</h2><p>生长、喂养、护理、睡眠、早教与特殊需求，适合日常学习和按月龄补知识。</p></div></div>
-      <div class="domain-list-v6">${encyclopediaDomains.map((domain) => domainCard(domain, articles, 'encyclopedia')).join('')}</div>
+      <div class="native-hero-v8">
+        <div><h2>分类百科</h2><p>当前知识库共 ${articles.length} 篇，按真实 Markdown 内容展示。</p></div>
+      </div>
+      <div class="category-groups-v8">${encyclopediaSections.map(([sectionId, items]) => encyclopediaGroup(sectionId, items)).join('')}</div>
     </section>
     <section class="knowledge-panel-v6" data-k-panel="health">
-      <div class="panel-title-v6 is-health"><span>护</span><div><h2>健康守护</h2><p>疾病与症状、用药安全、疫苗、心理健康、安全急救、妈妈健康统一放在这里。</p></div></div>
-      <div class="health-quick-v6">
-        <h3>症状急查</h3>
-        <div class="health-list-v6">${healthQuickCards(articles)}</div>
+      <div class="native-hero-v8 is-health">
+        <div><h2>健康守护</h2><p>当前健康急查 ${symptomArticles.length} 篇，先看结论和风险信号。</p></div>
       </div>
-      <div class="domain-list-v6">${healthDomains.map((domain) => domainCard(domain, articles, 'health')).join('')}</div>
+      <div class="article-list-v8">${articleRowsV8(symptomArticles)}</div>
     </section>`;
 }
 
 function replaceProfileScreen(data) {
   const profileScreen = document.querySelector('[data-screen="profile"]');
   if (!profileScreen) return;
-  profileScreen.querySelector('.page-head h2').textContent = '编辑宝宝档案';
+  profileScreen.querySelector('.page-head h2').textContent = '宝宝档案';
   const panel = profileScreen.querySelector('.profile-panel');
   const child = getChild(data);
   const growthProfile = getGrowthProfile(data);
-  const records = getCheckupRecords(data);
-  const vaccines = getVaccineRecords(data);
+  const records = checkupRows(data);
   const latest = records.at(-1);
+  const picked = selectedVaccineIds();
+  const pickedSet = new Set(picked);
+  const nextNodeDate = getSavedProfileObject().nextNodeDate || getSavedProfileObject().nextHealthDate || child.nextNode?.date || '2026-07-16';
+  const nextNodeTitle = getSavedProfileObject().nextHealthNode || child.nextNode?.title || '10月龄体检';
+  const groupedVaccines = vaccineCatalog.reduce((groups, item) => {
+    groups[item.month] ||= [];
+    groups[item.month].push(item);
+    return groups;
+  }, {});
 
   if (panel) {
-    panel.className = 'profile-panel profile-panel-v6';
+    panel.className = 'profile-panel profile-panel-v6 archive-profile-v8';
     panel.innerHTML = `
       <div class="profile-overview-v6">
-        <div><span>宝宝</span><strong>${E(child.nickname || '宝宝')} · ${E(child.ageLabel || '')}</strong><p>${E(child.sex || '')} · ${E(child.city || '')} · ${E(child.feedingType || '')}</p></div>
-        <button class="profile-action" type="button" data-health="${E(child.nextNode?.id || 'checkup-10m')}">下次节点</button>
+        <div><span>宝宝</span><strong>${E(child.nickname || '宝宝')} · ${E(child.ageLabel || '')}</strong><p>${E(child.sex || '')} · ${E(child.feedingType || '')}</p></div>
+        <button class="profile-action" type="button" data-go="profile">编辑</button>
       </div>
       <div class="archive-metrics-v6">
-        ${metricCard('身长', `${growthProfile.currentHeightCm || latest?.heightCm || 70.5} cm`, '最近一次记录')}
-        ${metricCard('体重', `${growthProfile.currentWeightKg || latest?.weightKg || 8.4} kg`, '最近一次记录')}
-        ${metricCard('儿保', `${records.length || child.checkupDone || 0} 次`, latest ? `最近 ${latest.date}` : '待补充')}
+        ${metricCard('身长', `${growthProfile.currentHeightCm || latest?.heightCm || 70.5} cm`, latest ? `最近 ${latest.date}` : '最近一次儿保')}
+        ${metricCard('体重', `${growthProfile.currentWeightKg || latest?.weightKg || 8.4} kg`, '看趋势，不看单点')}
+        ${metricCard('下次儿保', nextNodeDate, nextNodeTitle)}
       </div>
-      <section class="vaccine-summary-v6 is-profile"><div><span>已接种疫苗</span><strong>${vaccines.length || child.vaccineDone || 0}/${child.vaccineTotal || 8}</strong></div><div class="vaccine-chip-row-v6">${vaccines.map((item) => `<span>${E(item.title)}</span>`).join('')}</div></section>`;
+      <section class="checkup-records-v8">
+        <div class="profile-section-head-v8">
+          <div><span>儿保记录</span><h3>每次儿保记身长体重</h3></div>
+        </div>
+        <div class="checkup-table-v8">
+          ${records.map((record) => `
+            <article>
+              <span>${E(record.ageMonth)}月龄</span>
+              <strong>${E(record.weightKg)}kg · ${E(record.heightCm)}cm</strong>
+              <p>${E(record.date)}${record.note ? ` · ${E(record.note)}` : ''}</p>
+            </article>
+          `).join('')}
+        </div>
+        <form class="checkup-add-v8" data-checkup-form>
+          <label><span>月龄</span><input name="ageMonth" type="number" min="0" inputmode="numeric" value="${E(child.ageLabel || '').match(/\d+/)?.[0] || ''}"></label>
+          <label><span>体重 kg</span><input name="weightKg" type="number" step="0.1" inputmode="decimal" value="${E(growthProfile.currentWeightKg || latest?.weightKg || '')}"></label>
+          <label><span>身长 cm</span><input name="heightCm" type="number" step="0.1" inputmode="decimal" value="${E(growthProfile.currentHeightCm || latest?.heightCm || '')}"></label>
+          <label><span>日期</span><input name="date" type="date" value="${E(latest?.date || '')}"></label>
+          <button type="submit">记录本次儿保</button>
+        </form>
+      </section>
+      <section class="vaccine-sheet-v8">
+        <div class="profile-section-head-v8">
+          <div><span>接种表</span><h3>按疫苗节点自己勾选</h3></div>
+          <strong>${picked.length}/${vaccineCatalog.length}</strong>
+        </div>
+        <div class="vaccine-timeline-v8">
+          ${Object.entries(groupedVaccines).map(([month, items]) => `
+            <section>
+              <h4>${E(month)}</h4>
+              <div>
+                ${items.map((item) => `
+                  <button class="vaccine-row-v8 ${pickedSet.has(item.id) ? 'is-done' : ''}" type="button" data-vaccine-id="${E(item.id)}" aria-pressed="${pickedSet.has(item.id)}">
+                    <span></span>
+                    <div><strong>${E(item.title)} <small>${E(item.dose)} · ${E(item.cost)}</small></strong><p>建议接种日期：${E(item.date)}</p></div>
+                    <b>${pickedSet.has(item.id) ? '已接种' : '未接种'}</b>
+                  </button>
+                `).join('')}
+              </div>
+            </section>
+          `).join('')}
+        </div>
+      </section>`;
+  }
+
+  const form = profileScreen.querySelector('#profileForm');
+  if (form) {
+    form.classList.add('profile-basic-form-v8');
+    form.innerHTML = `
+      <h3>编辑基础信息</h3>
+      <div class="profile-form-grid">
+        <label><span>昵称</span><input name="nickname" type="text" autocomplete="off" required value="${E(child.nickname || '')}"></label>
+        <label><span>出生日期</span><input name="birthDate" type="date" required value="${E(child.birthDate || '')}"></label>
+        <label><span>性别</span><select name="sex">
+          ${['男孩', '女孩', '未填写'].map((item) => `<option value="${E(item)}" ${item === child.sex ? 'selected' : ''}>${E(item)}</option>`).join('')}
+        </select></label>
+        <label><span>喂养方式</span><select name="feedingType">
+          ${['母乳', '奶粉', '混合喂养'].map((item) => `<option value="${E(item)}" ${item === child.feedingType ? 'selected' : ''}>${E(item)}</option>`).join('')}
+        </select></label>
+        <label><span>下次儿保时间</span><input name="nextNodeDate" type="date" value="${E(nextNodeDate)}"></label>
+        <label class="is-wide"><span>过敏情况</span><textarea name="allergies" rows="2">${E(Array.isArray(child.allergies) ? child.allergies.join('、') : child.allergies || '暂无')}</textarea></label>
+        <label class="is-wide"><span>当前关注</span><textarea name="currentConcerns" rows="2">${E(Array.isArray(child.currentConcerns) ? child.currentConcerns.join('、') : child.currentConcerns || '')}</textarea></label>
+      </div>
+      <button class="profile-save" type="submit">保存档案</button>`;
+  }
+
+  const timeline = profileScreen.querySelector('.timeline-panel');
+  if (timeline) {
+    timeline.className = 'timeline-panel next-checkup-v8';
+    timeline.innerHTML = `
+      <h3>下次儿保时间</h3>
+      <p>${E(nextNodeTitle)}</p>
+      <strong>${E(nextNodeDate)}</strong>`;
   }
 }
 
 function setKnowledgeTab(name) {
   const target = name === 'health' || name === 'symptom' ? 'health' : 'encyclopedia';
+  const pageTitle = document.querySelector('[data-screen="knowledge"] .page-head h2');
+  if (pageTitle) pageTitle.textContent = target === 'health' ? '健康守护' : '知识百科';
   document.querySelectorAll('[data-k-tab]').forEach((tab) => {
     const active = tab.dataset.kTab === target;
     tab.classList.toggle('is-active', active);
@@ -322,7 +475,64 @@ function bindEnhancements() {
 
     const opener = event.target.closest('[data-open-knowledge-tab]');
     if (opener) window.setTimeout(() => setKnowledgeTab(opener.dataset.openKnowledgeTab), 0);
+
+    const vaccine = event.target.closest('[data-vaccine-id]');
+    if (vaccine) {
+      const current = new Set(selectedVaccineIds());
+      const id = vaccine.dataset.vaccineId;
+      if (current.has(id)) current.delete(id);
+      else current.add(id);
+      saveProfilePatch({ selectedVaccineIds: Array.from(current) });
+      replaceProfileScreen(data);
+    }
   });
+
+  document.addEventListener('submit', (event) => {
+    const checkupForm = event.target.closest('[data-checkup-form]');
+    if (checkupForm) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const formData = new FormData(checkupForm);
+      const record = {
+        ageMonth: Number(formData.get('ageMonth') || 0),
+        date: String(formData.get('date') || '').trim(),
+        weightKg: Number(formData.get('weightKg') || 0),
+        heightCm: Number(formData.get('heightCm') || 0),
+        note: '本次儿保记录'
+      };
+      if (record.ageMonth && record.date && record.weightKg && record.heightCm) {
+        const records = [...checkupRows(data), record].sort((a, b) => Number(a.ageMonth) - Number(b.ageMonth));
+        saveProfilePatch({
+          checkupRecords: records,
+          currentWeightKg: record.weightKg,
+          currentHeightCm: record.heightCm,
+          latestCheckupDate: record.date
+        });
+        replaceProfileScreen(data);
+      }
+      return;
+    }
+  }, true);
+
+  const profileForm = document.querySelector('#profileForm');
+  profileForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const formData = new FormData(profileForm);
+    const nextNodeDate = String(formData.get('nextNodeDate') || '').trim();
+    saveProfilePatch({
+      nickname: formData.get('nickname'),
+      birthDate: formData.get('birthDate'),
+      sex: formData.get('sex'),
+      feedingType: formData.get('feedingType'),
+      allergies: formData.get('allergies'),
+      currentConcerns: formData.get('currentConcerns'),
+      nextNodeDate,
+      nextHealthDate: nextNodeDate,
+      nextHealthNode: '下次儿保'
+    });
+    replaceProfileScreen(data);
+  }, true);
 
   const detailBody = document.querySelector('#detailBody');
   if (detailBody) {

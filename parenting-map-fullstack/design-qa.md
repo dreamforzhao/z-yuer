@@ -1,5 +1,100 @@
 # Parenting Map Design QA
 
+## Product Design v7 Polish
+
+This iteration keeps the v6 IA (`宝宝档案`, `育儿百科`, `健康守护`) and improves the mobile visual system rather than changing product scope.
+
+## v7 What Changed
+
+- Added a `design-polish-v7` layer so the current design can be distinguished from older v4/v5/v6 experiments.
+- Polished the baby archive home surface with softer medical-green panels, clearer hierarchy, and tighter card spacing.
+- Fixed the recommendation card grid so summaries sit beside their badges instead of being squeezed into the left column.
+- Improved the 390px mobile layout:
+  - archive metrics use two columns plus a full-width checkup card
+  - search input and submit button stack cleanly on mobile
+  - bottom navigation uses compact icon labels
+- Added visible focus states and lightweight press feedback for interactive controls.
+
+## v7 Verification
+
+| Check | Result |
+|---|---|
+| `node --check server.js` | passed |
+| `node --check public/app.js` | passed |
+| `node --check public/redesign.js` | passed |
+| Local HTTP `GET /` | 200 |
+| Browser screenshot | `qa/current-home-after-final-wide.png` captured with local Chrome |
+
+## v7.1 Browser Comment Fixes
+
+- Removed the duplicate in-page `育儿百科 / 健康守护` segmented switch. The bottom navigation is now the only primary switch.
+- Replaced the knowledge long-list layout with a two-column topic grid.
+- Reworked `健康守护` into compact symptom quick chips plus topic grid cards.
+- Verified in the Codex in-app browser:
+  - `.knowledge-switch-v6` count: `0`
+  - encyclopedia grid: two columns
+  - health grid: two columns
+  - `健康守护` bottom nav updates the page title and visible panel
+
+## v8 Reference-Inspired Polish
+
+- Reworked `宝宝档案` from count fields into maintainable records:
+  - vaccine nodes are now individually selectable
+  - checkups are recorded by date, month age, weight, and height
+  - the old vaccine/checkup count inputs are removed
+  - health timeline is reduced to one next-checkup date card
+- Reworked knowledge surfaces toward the provided native-app references:
+  - encyclopedia uses grouped category buttons
+  - health uses compact article rows and quick chips
+  - heavy feature cards are avoided on list-heavy pages
+- Verified in the Codex in-app browser:
+  - vaccine rows: `11`
+  - selected vaccine rows: `4`
+  - checkup records: `4`
+  - count inputs in profile form: `0`
+  - knowledge category grid: three columns
+
+## v8.1 Open-Design Content Alignment
+
+- Removed `返回` from bottom-nav primary pages.
+- Knowledge pages now render from actual Markdown articles only:
+  - `症状急查`: 咳嗽、腹泻、发热、皮疹、呕吐
+  - `喂养营养`: 辅食添加顺序
+- Removed placeholder/future domain categories from the visible encyclopedia.
+- Removed duplicate quick-chip section from `健康守护`.
+- Verified in the Codex in-app browser:
+  - visible back buttons on knowledge page: `0`
+  - encyclopedia groups: `2`
+  - health article rows: `5`
+  - duplicate health quick chips: `0`
+
+## v8.2 Home Simplification
+
+- Removed the home `今日推荐 / 先看这 3 件事` block.
+- Verified in the Codex in-app browser:
+  - home recommendation cards: `0`
+  - home answer cards: `0`
+  - search panel still present: `1`
+  - archive summary still present: `1`
+
+## v8.3 Profile Field Simplification
+
+- Removed the `城市` field from profile editing and saved query sync.
+- Removed city text from archive/profile summaries.
+- Verified in the Codex in-app browser:
+  - city inputs: `0`
+  - city labels: `0`
+
+## v8.4 Health Guard Deduplication
+
+- Product Design pass: `健康守护` now has one content pattern only, the article list backed by real Markdown symptom entries.
+- Added a CSS guard to hide stale duplicate health quick/category/domain blocks if old DOM appears during refresh.
+- Verified in the Codex in-app browser:
+  - health article rows: `5`
+  - health quick blocks: `0`
+  - health category groups: `0`
+  - health domain panels: `0`
+
 ## Product Design v6 Scope
 
 This iteration changes the main IA to three primary entries only: `宝宝档案`, `育儿百科`, and `健康守护`.
