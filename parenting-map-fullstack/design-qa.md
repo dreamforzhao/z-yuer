@@ -68,6 +68,79 @@ This iteration keeps the v6 IA (`宝宝档案`, `育儿百科`, `健康守护`) 
   - health article rows: `5`
   - duplicate health quick chips: `0`
 
+## v8.5 Product Design Follow-up
+
+- Home archive no longer repeats the next checkup in both hero and metric areas.
+- Home third metric is now `next checkup` instead of a useless checkup count.
+- Health guard list was tightened so all 5 real symptom Markdown entries fit above the bottom nav.
+- Verified in the Codex in-app browser:
+  - home recommendation blocks: `0`
+  - home metric labels: `height`, `weight`, `next checkup`
+  - health article rows: `5`
+  - duplicate health quick blocks: `0`
+  - duplicate health domain panels: `0`
+  - active screen bottom padding: `118px`
+
+## v8.6 Detail Flow Fixes
+
+- Detail back now returns to the originating knowledge panel instead of the baby archive.
+- Internal detail footer blocks were removed from the visible page:
+  - related plan card
+  - source explanation card
+- Verified in the Codex in-app browser:
+  - health article detail back target: `health`
+  - encyclopedia article detail back target: `encyclopedia`
+  - detail source blocks: `0`
+  - detail related blocks: `0`
+
+## v8.7 Encyclopedia Framework Fix
+
+- `育儿百科` no longer repeats the health symptom article grid.
+- Encyclopedia now renders the non-health Markdown domain framework:
+  - growth development
+  - feeding nutrition
+  - daily care
+  - sleep
+- `健康守护` remains the only place for symptom quick articles.
+- Verified in the Codex in-app browser:
+  - encyclopedia framework groups: `4`
+  - symptom terms inside encyclopedia: `0`
+  - encyclopedia article entries: `food`
+  - health article rows: `fever`, `cough`, `diarrhea`, `rash`, `vomit`
+
+## v8.8 Encyclopedia Interaction Polish
+
+- Removed the encyclopedia hero/explainer block so the page starts directly with the framework.
+- Upgraded framework items into shadowed tappable cards.
+- Added topic detail rendering for framework items that are not full Markdown articles yet.
+- Added an encyclopedia shopping checklist with local selection state and a running total.
+- Verified in the Codex in-app browser:
+  - encyclopedia hero blocks: `0`
+  - framework buttons: `12`
+  - generated topic detail buttons: `11`
+  - shopping cards: `1`
+  - shopping total changes from `¥119` to `¥164` after selecting `吸管杯`
+  - generated topic detail source blocks: `0`
+
+## v8.9 Profile Edit Return Fix
+
+- The profile edit overview card no longer shows a second `编辑` action.
+- Replaced it with `返回`, which returns to the baby archive home surface.
+- Verified in the Codex in-app browser:
+  - profile overview edit buttons: `0`
+  - profile back buttons: `1`
+  - after tapping back active screen: `home`
+  - after tapping back active nav: `archive`
+
+## v8.10 Archive Duplicate Edit Fix
+
+- Removed the extra circular `编` button from the baby archive top bar.
+- Kept the main archive card `编辑` action as the single edit entry.
+- Verified in the Codex in-app browser:
+  - home topbar profile-dot buttons: `0`
+  - home topbar buttons: `0`
+  - archive hero edit buttons: `1`
+
 ## v8.2 Home Simplification
 
 - Removed the home `今日推荐 / 先看这 3 件事` block.
